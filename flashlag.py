@@ -28,8 +28,8 @@ data_out = pd.DataFrame(columns=('response','actual','correct'))
 
 #Initalize variables
 dotRad = (0.085,0.085)
-flashRad = (0.075,0.075)
-circleRadius = .55
+flashRad = (0.085,0.085)
+circleRadius = .40
 flashRadius = circleRadius+.1
 
 win = visual.Window([1000,1000], monitor='testMonitor', color=[-1,-1,-1], colorSpace='rgb',
@@ -37,7 +37,7 @@ win = visual.Window([1000,1000], monitor='testMonitor', color=[-1,-1,-1], colorS
 
 #Instructions text
 instrText = visual.TextStim(win=win, ori=0, name='instrText',
-    text=u'In this experiment you will observe a rotating white sphere and a flashed yellow sphere. If the flash appears ahead of the white sphere, press \u2192, if it appears behind the white sphere, press \u2190, and if it appears at the same time, press \u2193. \n \n Press any key continue.',    font=u'Arial',
+    text=u'In this experiment you will observe a rotating white sphere and a flashed yellow sphere. If the flash appears ahead of the white sphere, press \u2192, if it appears behind the white sphere, press \u2190. \n \n Press any key continue.',    font=u'Arial',
     pos=[0, 0], height=0.05, wrapWidth=None,
     color=u'white', colorSpace='rgb', opacity=1,
     depth=0.0)
@@ -53,7 +53,7 @@ trialType = np.repeat([-20,-10,0,10,20],20)
 myDict = {'-20': 'left', '-10': 'left', '0': 'down', '20': 'right', '10': 'right'}
 randTrials = np.random.permutation(trialType)
 response = [myDict[str(i)] for i in randTrials]
-anglePres = np.arange(30,330,10) #this is the angle at which the flashed yellow sphere will be drawn.
+anglePres = np.repeat(90,100) #this is the angle at which the flashed yellow sphere will be drawn.
 values = [random.choice(anglePres) for _ in xrange(100)] #random choice with replacement
 angle = np.arange(0,370,10) #controls the step size of the presentation of the angle
 
