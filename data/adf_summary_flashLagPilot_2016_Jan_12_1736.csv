@@ -1,0 +1,9 @@
+response,actual,correct
+right,down,False
+left,left,True
+right,right,True
+left,left,True
+down,left,False
+down,right,False
+down,down,True
+left,left,True

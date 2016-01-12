@@ -1,0 +1,6 @@
+response,actual,correct
+right,left,False
+right,right,True
+right,down,False
+right,right,True
+left,left,True
