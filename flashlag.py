@@ -23,7 +23,7 @@ expInfo['expName'] = expName
 
 # Data file name stem = absolute path + name; # Output summary data and analyzed files
 filename = _thisDir + os.sep + 'data/%s_%s' %(expInfo['User'], expName)
-outputfn =  _thisDir + os.sep +'data/%s_summary_%s_%s.csv' %(expInfo['User'], expName, expInfo['date'])
+outputfn =  _thisDir + os.sep +'data/%s_%s_%s.csv' %(expInfo['User'], expName, expInfo['date'])
 data_out = pd.DataFrame(columns=('response','actual','correct'))
 
 #Initalize variables
@@ -49,8 +49,8 @@ flashDot = visual.GratingStim(win=win, mask="gauss", size=flashRad,color='yellow
 #Build vector of trialTypes, These will be random for each user.
 #May be better to have one version of these and load them rather than build dynamically for each user.
 #Also add line to save these automatically for each user.
-trialType = np.repeat([-20,-10,0,10,20],20)
-myDict = {'-20': 'left', '-10': 'left', '0': 'down', '20': 'right', '10': 'right'}
+trialType = np.repeat([-40,-20,0,20,40],20)
+myDict = {'-40': 'left', '-20': 'left', '0': 'down', '20': 'right', '40': 'right'}
 randTrials = np.random.permutation(trialType)
 response = [myDict[str(i)] for i in randTrials]
 anglePres = np.repeat(90,100) #this is the angle at which the flashed yellow sphere will be drawn.
@@ -100,7 +100,7 @@ for rot, angleDev, response in zip(randTrials, values, response):
     #Check if user wants to quit
     if "escape" in theseKeys:
         core.quit()
-    for angle in np.arange(0,370,10):
+    for angle in np.arange(0,361,10):
         angleRad = radians(angle)
         x = circleRadius*sin(angleRad)
         y = circleRadius*cos(angleRad)
@@ -119,7 +119,7 @@ for rot, angleDev, response in zip(randTrials, values, response):
         event.clearEvents('mouse') #only really needed for pygame windows
     win.flip()
 
-    theseKeys = event.waitKeys(float('inf'), keyList=('left', 'right', 'down', 'escape'), timeStamped = False)
+    theseKeys = event.waitKeys(float('inf'), keyList=('left', 'right', 'escape'), timeStamped = False)
     #Check if user wants to quit
     if "escape" in theseKeys:
         core.quit()
