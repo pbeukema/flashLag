@@ -49,13 +49,12 @@ flashDot = visual.GratingStim(win=win, mask="gauss", size=flashRad,color='yellow
 #Build vector of trialTypes, These will be random for each user.
 #May be better to have one version of these and load them rather than build dynamically for each user.
 #Also add line to save these automatically for each user.
-trialType = np.repeat([-40,-20,0,20,40],20)
-myDict = {'-40': 'left', '-20': 'left', '0': 'down', '20': 'right', '40': 'right'}
+trialType = np.repeat([-20,0,20,40, 60],20)
+myDict = {'-20': 'left', '0': 'left', '20': 'right', '40': 'right', '60': 'right'}
 randTrials = np.random.permutation(trialType)
 response = [myDict[str(i)] for i in randTrials]
 anglePres = np.repeat(90,100) #this is the angle at which the flashed yellow sphere will be drawn.
 values = [random.choice(anglePres) for _ in xrange(100)] #random choice with replacement
-angle = np.arange(0,370,10) #controls the step size of the presentation of the angle
 
 #-------Set Up "Instructions"-------
 NOT_STARTED = 0
@@ -100,19 +99,27 @@ for rot, angleDev, response in zip(randTrials, values, response):
     #Check if user wants to quit
     if "escape" in theseKeys:
         core.quit()
+    frameN=0
+    flash=False
     for angle in np.arange(0,361,10):
+
         angleRad = radians(angle)
         x = circleRadius*sin(angleRad)
         y = circleRadius*cos(angleRad)
         clockDot.setPos([x,y])
         clockDot.draw()
 
-        if angle == angleDev:
-            angleRad = radians(angle+rot)
-            x = flashRadius*sin(angleRad)
-            y = flashRadius*cos(angleRad)
-            flashDot.setPos([x,y])
+        if angle == angleDev :
+            angleMark = angle
+            angleRad = radians(angleMark+rot)
+            x2 = flashRadius*sin(angleRad)
+            y2 = flashRadius*cos(angleRad)
+            flash = True
+        #set position of flash
+        if frameN <= 4 and flash:
+            flashDot.setPos([x2,y2])
             flashDot.draw()
+            frameN = frameN+1
         win.flip()
         if event.getKeys(keyList="escape"):
             core.quit()
