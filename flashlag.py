@@ -49,11 +49,11 @@ flashDot = visual.GratingStim(win=win, mask="gauss", size=flashRad,color='yellow
 #Build vector of trialTypes, These will be random for each user.
 #May be better to have one version of these and load them rather than build dynamically for each user.
 #Also add line to save these automatically for each user.
-trialType = np.repeat([-20,0,20,40, 60],20)
+trialType = np.repeat([-20,0,20,40,60],20)
 myDict = {'-20': 'left', '0': 'left', '20': 'right', '40': 'right', '60': 'right'}
 randTrials = np.random.permutation(trialType)
 response = [myDict[str(i)] for i in randTrials]
-anglePres = np.repeat(90,100) #this is the angle at which the flashed yellow sphere will be drawn.
+anglePres = np.arange(90,270,10) #this is the angle at which the flashed yellow sphere will be drawn.
 values = [random.choice(anglePres) for _ in xrange(100)] #random choice with replacement
 
 #-------Set Up "Instructions"-------
