@@ -1,9 +1,0 @@
-response,actual,correct
-left,down,False
-right,left,False
-right,right,True
-right,right,True
-left,right,False
-down,right,False
-down,down,True
-left,left,True
