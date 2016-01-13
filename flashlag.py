@@ -1,20 +1,17 @@
 #!/usr/bin/env python2
 
 from psychopy import visual, core, event, gui, data
-import numpy as np
-import time
-from math import sin, cos, radians
-from random import shuffle, randint, uniform
-import os, csv
-import random
-import math
-import os
+import time, os, csv
+import math, random
 import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 #Set up Output file for reading and writing
 _thisDir = os.path.dirname(os.path.abspath(__file__))
 os.chdir(_thisDir)
-expName = 'flashLagPilot'  # from the Builder filename that created this script
+expName = 'Flash Lag Pilot'  # from the Builder filename that created this script
 expInfo = {u'User': u''}
 dlg = gui.DlgFromDict(dictionary=expInfo, title=expName)
 if dlg.OK == False: core.quit()  # user pressed cancel
@@ -24,7 +21,7 @@ expInfo['expName'] = expName
 # Data file name stem = absolute path + name; # Output summary data and analyzed files
 filename = _thisDir + os.sep + 'data/%s_%s' %(expInfo['User'], expName)
 outputfn =  _thisDir + os.sep +'data/%s_%s_%s.csv' %(expInfo['User'], expName, expInfo['date'])
-data_out = pd.DataFrame(columns=('response','actual','correct'))
+data_out = pd.DataFrame(columns=('response','correct','rotation'))
 
 #Initalize variables
 dotRad = (0.085,0.085)
@@ -32,10 +29,11 @@ flashRad = (0.085,0.085)
 circleRadius = .40
 flashRadius = circleRadius+.1
 
+#Set up Window
 win = visual.Window([1000,1000], monitor='testMonitor', color=[-1,-1,-1], colorSpace='rgb',
     blendMode='avg', useFBO=True)
 
-#Instructions text
+#Initalize Instructions Text
 instrText = visual.TextStim(win=win, ori=0, name='instrText',
     text=u'In this experiment you will observe a rotating white sphere and a flashed yellow sphere. If the flash appears ahead of the white sphere, press \u2192, if it appears behind the white sphere, press \u2190. \n \n Press any key continue.',    font=u'Arial',
     pos=[0, 0], height=0.05, wrapWidth=None,
@@ -59,9 +57,8 @@ values = [random.choice(anglePres) for _ in xrange(100)] #random choice with rep
 #-------Set Up "Instructions"-------
 NOT_STARTED = 0
 STARTED=1
-instructions_response = event.BuilderKeyResponse()  #create an object of type KeyResponse
+instructions_response = event.BuilderKeyResponse()
 instructions_response.status = NOT_STARTED
-# keep track of which components have finished
 InstructionsComponents = []
 InstructionsComponents.append(instrText)
 InstructionsComponents.append(instructions_response)
@@ -88,13 +85,11 @@ for thisComponent in InstructionsComponents:
     if hasattr(thisComponent, "setAutoDraw"):
         thisComponent.setAutoDraw(False)
 #-------End Routine "Instructions"-------
-# refresh the screen
 win.flip()
 core.wait(3)
 fixSpot.setAutoDraw(True)
 
 #-------Start Routine "Main Experiment"-------
-#ie forever Hard capped to 60Hz refresh rate
 for rot, angleDev, response in zip(randTrials, values, response):
     #Check if user wants to quit
     if "escape" in theseKeys:
@@ -103,17 +98,17 @@ for rot, angleDev, response in zip(randTrials, values, response):
     flash=False
     for angle in np.arange(0,361,10):
 
-        angleRad = radians(angle)
-        x = circleRadius*sin(angleRad)
-        y = circleRadius*cos(angleRad)
+        angleRad = math.radians(angle)
+        x = circleRadius*math.sin(angleRad)
+        y = circleRadius*math.cos(angleRad)
         clockDot.setPos([x,y])
         clockDot.draw()
 
         if angle == angleDev :
             angleMark = angle
-            angleRad = radians(angleMark+rot)
-            x2 = flashRadius*sin(angleRad)
-            y2 = flashRadius*cos(angleRad)
+            angleRad = math.radians(angleMark+rot)
+            x2 = flashRadius*math.sin(angleRad)
+            y2 = flashRadius*math.cos(angleRad)
             flash = True
         #set position of flash
         if frameN <= 4 and flash:
@@ -134,7 +129,14 @@ for rot, angleDev, response in zip(randTrials, values, response):
     #was the response correct?
 
     correct = key_response==response
-    data_out.loc[len(data_out)+1]=[key_response,response, correct]
+    data_out.loc[len(data_out)+1]=[key_response, correct, rot]
     data_out.to_csv(outputfn, index=False)
     core.wait(1)
 #-------End Routine "Main Experiment"-------
+
+#-------Analyze Data and To do: Fit Logit model----
+grabMeans = data_out.groupby(['rotation']).mean().reset_index()
+plt.figure(figsize=(4,4))
+sns.regplot(x='rotation', y='correct', data=grabMeans,fit_reg=False)
+plotfn =  _thisDir + os.sep +'data/%saccuracy_%s_.png' %(expInfo['User'], expName)
+plt.savefig(plotfn)
