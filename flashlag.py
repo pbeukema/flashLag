@@ -5,7 +5,7 @@ import time, os, csv
 import math, random
 import pandas as pd
 import numpy as np
-import seaborn as sns
+#import seaborn as sns
 import matplotlib.pyplot as plt
 
 #Set up Output file for reading and writing
@@ -35,7 +35,7 @@ win = visual.Window([1000,1000], monitor='testMonitor', color=[-1,-1,-1], colorS
 
 #Initalize Instructions Text
 instrText = visual.TextStim(win=win, ori=0, name='instrText',
-    text=u'In this experiment you will observe a rotating white sphere and a flashed yellow sphere. If the flash appears ahead of the white sphere, press \u2192, if it appears behind the white sphere, press \u2190. \n \n Press any key continue.',    font=u'Arial',
+    text=u'In this experiment you will observe a rotating white sphere and a flashed yellow sphere. If the flash appears ahead of the white sphere, press \u2190, if it appears behind the white sphere, press \u2192. \n \n Press any key continue.',    font=u'Arial',
     pos=[0, 0], height=0.05, wrapWidth=None,
     color=u'white', colorSpace='rgb', opacity=1,
     depth=0.0)
@@ -48,12 +48,12 @@ flashDot = visual.GratingStim(win=win, mask="gauss", size=flashRad,color='yellow
 #May be better to have one version of these and load them rather than build dynamically for each user.
 #Also add line to save these automatically for each user.
 trialType = np.repeat([-20,0,20,40,60],20)
-myDict = {'-20': 'left', '0': 'left', '20': 'right', '40': 'right', '60': 'right'}
+myDict = {'-20': 'right', '0': 'right', '20': 'left', '40': 'left', '60': 'left'}
 randTrials = np.random.permutation(trialType)
 response = [myDict[str(i)] for i in randTrials]
-anglePres = np.arange(90,270,10) #this is the angle at which the flashed yellow sphere will be drawn.
+anglePres = np.arange(90,210,10) #this is the angle at which the flashed yellow sphere will be drawn.
 values = [random.choice(anglePres) for _ in xrange(100)] #random choice with replacement
-
+print values
 #-------Set Up "Instructions"-------
 NOT_STARTED = 0
 STARTED=1
@@ -87,10 +87,12 @@ for thisComponent in InstructionsComponents:
 #-------End Routine "Instructions"-------
 win.flip()
 core.wait(3)
-fixSpot.setAutoDraw(True)
+fixSpot.setAutoDraw(False)
 
 #-------Start Routine "Main Experiment"-------
 for rot, angleDev, response in zip(randTrials, values, response):
+    clockDot = visual.GratingStim(win=win, mask='gauss', size=dotRad, color='white', opacity = '0.9', autoDraw=False)
+    core.wait(.5)
     #Check if user wants to quit
     if "escape" in theseKeys:
         core.quit()
@@ -116,6 +118,7 @@ for rot, angleDev, response in zip(randTrials, values, response):
             flashDot.draw()
             frameN = frameN+1
         win.flip()
+
         if event.getKeys(keyList="escape"):
             core.quit()
         event.clearEvents('mouse') #only really needed for pygame windows
@@ -131,7 +134,8 @@ for rot, angleDev, response in zip(randTrials, values, response):
     correct = key_response==response
     data_out.loc[len(data_out)+1]=[key_response, correct, rot]
     data_out.to_csv(outputfn, index=False)
-    core.wait(1)
+    core.wait(.5)
+
 #-------End Routine "Main Experiment"-------
 
 #-------Analyze Data and To do: Fit Logit model----
