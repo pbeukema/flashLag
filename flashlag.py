@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 
 from psychopy import visual, core, event, gui, data
 
-#Grab user info and set up output files for analysis
+# Grab user info and set up output files for analysis
 _thisDir = os.path.dirname(os.path.abspath(__file__))
 os.chdir(_thisDir)
 expName = 'FlashLagPilot'
@@ -26,19 +26,22 @@ outputfn =  _thisDir + os.sep +'data/%s_%s_%s.csv' %(expInfo['User'], expName, e
 dataOut = pd.DataFrame(columns = ('response','correct','rotation'))
 grabMeans = pd.DataFrame()
 
-#Initalize stimuli parameters
-#all units are in pixels to show correctly on any sized screen
-#user may wish to modify for optimality on small or larger screens
-#tested on 1920x1080 (widescreen) display
+'''
+Initalize stimuli parameters
+all units are in pixels to show correctly on any sized screen
+user may wish to modify for optimality on small or larger screens
+tested on 1920x1080 (widescreen) display
+'''
+
 dotRad = (25,25)
 flashRad = (25,25)
 circleRadius = 200
 flashRadius = circleRadius+25 # displacement from target in pixels
 
-#Set up Window
+# Set up Window
 win = visual.Window([1000,1000], monitor = 'testMonitor', color = [-1,-1,-1], colorSpace = 'rgb', blendMode = 'avg', useFBO = True, allowGUI = False,fullscr=True)
 
-#Initalize Instructions Text
+# Initalize Instructions Text
 instrText = visual.TextStim(win = win, ori = 0, name = 'instrText',
     text=u'In this experiment you will observe a rotating white sphere and a flashed yellow sphere. If the flash appears ahead of the white sphere, press \u2190, if it appears behind the white sphere, press \u2192. \n \n Press any key continue.', font = u'Arial',  pos = [0, 0], height = 0.05, wrapWidth = None, color = u'white', colorSpace = 'rgb', opacity = 1, depth = 0.0)
 
@@ -46,9 +49,9 @@ fixSpot = visual.GratingStim(win, tex = None, mask = 'gauss', size = (20,20), un
 clockDot = visual.GratingStim(win = win, mask = 'gauss', size = dotRad, color = 'white', units='pix', opacity = '0.9', autoDraw=False)
 flashDot = visual.GratingStim(win = win, mask = 'gauss', units='pix', size = flashRad,color = 'yellow')
 
-#Build vector of trials, dynamically generated for each new user
-trialType = np.repeat([-20,0,20,40,60],20)
-myDict = {'-20': 'right', '0': 'right', '20': 'left', '40': 'left', '60': 'left'}
+# Build vector of trials, dynamically generated for each new user
+trialType = np.repeat([-15,0,15,30,45],1) # 20 trials for each of 5 conditions
+myDict = {'-15': 'right', '0': 'right', '15': 'left', '30': 'left', '45': 'left'}
 randTrials = np.random.permutation(trialType)
 response = [myDict[str(i)] for i in randTrials]
 anglePres = np.arange(90,210,10) # yellow flash
@@ -97,7 +100,7 @@ for rot, angleDev, response in zip(randTrials, values, response):
     frameN = 0
     flash = False
 
-    #project sphere for 500 ms so that user directs focus to sphere
+    # project sphere for 800 ms so that user directs focus to sphere
     angleRad = math.radians(0)
     x = circleRadius*math.sin(angleRad)
     y = circleRadius*math.cos(angleRad)
@@ -108,7 +111,7 @@ for rot, angleDev, response in zip(randTrials, values, response):
     core.wait(.8)
 
 
-    for angle in np.arange(0,361,5):
+    for angle in np.arange(0,361,10):
         angleRad = math.radians(angle)
         x = circleRadius*math.sin(angleRad)
         y = circleRadius*math.cos(angleRad)
@@ -120,8 +123,8 @@ for rot, angleDev, response in zip(randTrials, values, response):
             x2 = flashRadius*math.sin(angleRad)
             y2 = flashRadius*math.cos(angleRad)
             flash = True
-        #set position of flash
-        if frameN <= 4 and flash:
+        # set position of flash
+        if frameN <= 4 and flash: # show flash for 4 frames
             flashDot.setPos([x2,y2])
             flashDot.draw()
             frameN = frameN+1
@@ -130,17 +133,18 @@ for rot, angleDev, response in zip(randTrials, values, response):
             core.quit()
         event.clearEvents('mouse')
 
-    #turn off stimulus and wait for response
+    # Turn off stimulus and wait for response
     clockDot.setAutoDraw(False)
     win.update()
     win.flip()
     theseKeys = event.waitKeys(float('inf'), keyList=('left', 'right', 'escape'), timeStamped = False)
-    #Check if user wants to quit
+
+    # Check if user wants to quit
     if 'escape' in theseKeys:
         core.quit()
 
     key_response = theseKeys[0]
-    #was the response correct?
+    # Check if the response was correct
     correct = key_response == response
     dataOut.loc[len(dataOut)+1] = [key_response, correct, rot]
     dataOut.to_csv(outputfn, index = False)
@@ -149,7 +153,6 @@ for rot, angleDev, response in zip(randTrials, values, response):
 #-------End Routine "Main Experiment"-------
 
 #-------Analyze Data To do: Fit Logit model----
-
 #grabMeans = dataOut.groupby(['rotation'], as_index=False).mean()
 grabMeans = pd.DataFrame(columns=('rotation', 'accuracy'))
 i = 0
