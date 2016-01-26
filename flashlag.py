@@ -43,15 +43,15 @@ win = visual.Window([1000,1000], monitor = 'testMonitor', color = [-1,-1,-1], co
 
 # Initalize Instructions Text
 instrText = visual.TextStim(win = win, ori = 0, name = 'instrText',
-    text=u'In this experiment you will observe a rotating white sphere and a flashed yellow sphere. If the flash appears ahead of the white sphere, press \u2190, if it appears behind the white sphere, press \u2192. \n \n Press any key continue.', font = u'Arial',  pos = [0, 0], height = 0.05, wrapWidth = None, color = u'white', colorSpace = 'rgb', opacity = 1, depth = 0.0)
+    text=u'\n In this experiment you will observe a rotating white sphere and a flashed yellow sphere. \n If the flash appears behind the white sphere, press \u2191. \n If the flash appears ahead of the white sphere, press \u2193. \n \n Press any key continue.', font = u'Arial',  pos = [0, 0], height = 0.05, wrapWidth = None, color = u'white', colorSpace = 'rgb', opacity = 1, depth = 0.0)
 
 fixSpot = visual.GratingStim(win, tex = None, mask = 'gauss', size = (20,20), units='pix', color = 'white', autoDraw = False)
 clockDot = visual.GratingStim(win = win, mask = 'gauss', size = dotRad, color = 'white', units='pix', opacity = '0.9', autoDraw=False)
 flashDot = visual.GratingStim(win = win, mask = 'gauss', units='pix', size = flashRad,color = 'yellow')
 
 # Build vector of trials, dynamically generated for each new user
-trialType = np.repeat([-15,0,15,30,45],1) # 20 trials for each of 5 conditions
-myDict = {'-15': 'right', '0': 'right', '15': 'left', '30': 'left', '45': 'left'}
+trialType = np.repeat([-20,0,20,30,40],20) # 20 trials for each of 5 conditions
+myDict = {'-20': 'up', '0': 'up', '20': 'down', '30': 'down', '40': 'down'}
 randTrials = np.random.permutation(trialType)
 response = [myDict[str(i)] for i in randTrials]
 anglePres = np.arange(90,210,10) # yellow flash
@@ -137,7 +137,7 @@ for rot, angleDev, response in zip(randTrials, values, response):
     clockDot.setAutoDraw(False)
     win.update()
     win.flip()
-    theseKeys = event.waitKeys(float('inf'), keyList=('left', 'right', 'escape'), timeStamped = False)
+    theseKeys = event.waitKeys(float('inf'), keyList=('up', 'down', 'escape'), timeStamped = False)
 
     # Check if user wants to quit
     if 'escape' in theseKeys:
