@@ -19,7 +19,7 @@ Below are instructions for getting flash lag on your computer. These instruction
   
 3. If you did not clone the repo, then you will need to make a data directory for the output in the same location as flashlag.py (mkdir data).
 
-4. execute python flashlag.py from a terminal
+4. Open a terminal, navigate to the directory containing flashlag.py, write python flashlag.py & press [enter]
 
-5. Output data will be saved in /data/
+5. Output data will be saved in data/
 
