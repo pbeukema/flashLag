@@ -1,7 +1,7 @@
 # flashlag
 Adaptative flash lag experimental design for python
 
-Below are instructions for getting flash lag on your computer. These instructions will work for linux and mac, but will need some modifications for use in windows. Note that if you have already installed the stand alone version of psychopy which is a dependency of this program, when you try running this program from a terminal, it may not recognize the stand alone version. If you install psychopy with pip with the above command, then the libraries should successfully be loaded. 
+Below are instructions for getting flash lag on your computer. These instructions will work for linux and mac, but will need some modifications for use in windows. Note that if you have already installed the stand alone version of psychopy, when you try running this program from a terminal, it may not recognize that version. Use pip install psychopy (2b), and the libraries will import correctly. 
  
 1. Install anaconda (http://continuum.io/downloads), [bash Anaconda$version#.sh]
 
