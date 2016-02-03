@@ -1,5 +1,5 @@
 #!/usr/bin/env python2
-
+#Author: P. Beukema February 2016
 import math
 import random
 import pandas as pd
@@ -33,28 +33,28 @@ user may wish to modify for optimality on small or larger screens
 tested on 1920x1080 (widescreen) display
 '''
 
-dotRad = (25,25)
-flashRad = (25,25)
-circleRadius = 200
-flashRadius = circleRadius+25 # displacement from target in pixels
+dotRad = (55,55)
+flashRad = (55,55)
+circleRadius = 300
+flashRadius = circleRadius+35 # displacement from target in pixels
 
 # Set up Window
 win = visual.Window([1000,1000], monitor = 'testMonitor', color = [-1,-1,-1], colorSpace = 'rgb', blendMode = 'avg', useFBO = True, allowGUI = False,fullscr=True)
 
 # Initalize Instructions Text
 instrText = visual.TextStim(win = win, ori = 0, name = 'instrText',
-    text=u'\n In this experiment you will observe a rotating white sphere and a flashed yellow sphere. \n If the flash appears behind the white sphere, press \u2191. \n If the flash appears ahead of the white sphere, press \u2193. \n \n Press any key continue.', font = u'Arial',  pos = [0, 0], height = 0.05, wrapWidth = None, color = u'white', colorSpace = 'rgb', opacity = 1, depth = 0.0)
+    text=u'\n In this experiment you will observe a rotating white sphere and a flashed yellow sphere. \n If the flash appears behind the white sphere, press \u2193. \n If the flash appears ahead of the white sphere, press \u2191. \n \n Press any key continue.', font = u'Arial',  pos = [0, 0], height = 0.05, wrapWidth = None, color = u'white', colorSpace = 'rgb', opacity = 1, depth = 0.0)
 
 fixSpot = visual.GratingStim(win, tex = None, mask = 'gauss', size = (20,20), units='pix', color = 'white', autoDraw = False)
 clockDot = visual.GratingStim(win = win, mask = 'gauss', size = dotRad, color = 'white', units='pix', opacity = '0.9', autoDraw=False)
 flashDot = visual.GratingStim(win = win, mask = 'gauss', units='pix', size = flashRad,color = 'yellow')
 
 # Build vector of trials, dynamically generated for each new user
-trialType = np.repeat([-20,0,20,30,40],20) # 20 trials for each of 5 conditions
-myDict = {'-20': 'up', '0': 'up', '20': 'down', '30': 'down', '40': 'down'}
+trialType = np.repeat([-32,-16,-8,0,8,16,32],10) # 20 trials for each of 5 conditions
+myDict = {'-32': 'down', '-16': 'down', '-8': 'down', '0': 'down', '8': 'up', '16': 'up', '32': 'up'}
 randTrials = np.random.permutation(trialType)
 response = [myDict[str(i)] for i in randTrials]
-anglePres = np.arange(90,210,10) # yellow flash
+anglePres = np.arange(88,264,8) # yellow flash
 values = [random.choice(anglePres) for _ in xrange(100)]
 
 #-------Set Up Routine "Instructions"-------
@@ -111,7 +111,7 @@ for rot, angleDev, response in zip(randTrials, values, response):
     core.wait(.8)
 
 
-    for angle in np.arange(0,361,10):
+    for angle in np.arange(0,361,4):
         angleRad = math.radians(angle)
         x = circleRadius*math.sin(angleRad)
         y = circleRadius*math.cos(angleRad)
@@ -124,7 +124,7 @@ for rot, angleDev, response in zip(randTrials, values, response):
             y2 = flashRadius*math.cos(angleRad)
             flash = True
         # set position of flash
-        if frameN <= 4 and flash: # show flash for 4 frames
+        if frameN <= 1 and flash: # show flash for 4 frames
             flashDot.setPos([x2,y2])
             flashDot.draw()
             frameN = frameN+1
@@ -155,12 +155,12 @@ for rot, angleDev, response in zip(randTrials, values, response):
 #-------Analyze Data To do: Fit Logit model----
 #grabMeans = dataOut.groupby(['rotation'], as_index=False).mean()
 grabMeans = pd.DataFrame(columns=('rotation', 'accuracy'))
-i = 0
+i=0
 for rot in np.unique(dataOut[['rotation']]):
     block_df = dataOut.loc[dataOut['rotation']==rot]
     mean_acc = block_df[['correct']].mean()
     grabMeans.loc[i] = [rot, mean_acc.correct]
-    i = i + 1
+    i=i+1
 plt.figure(figsize=(6,6))
 sns.regplot(x='rotation', y='accuracy', data = grabMeans, fit_reg = False)
 plotfn =  _thisDir + os.sep +'data/%saccuracy_%s_.png' %(expInfo['User'], expName)
