@@ -116,11 +116,8 @@ for rot, angleDev, response in zip(randTrials, values, response):
     core.wait(.8)
 
 
-<<<<<<< HEAD
+
     for angle in np.arange(0,361,4):
-=======
-    for angle in np.arange(0,361,8):
->>>>>>> 34d264f8b867734b5ec4243651ce77e60a323630
         angleRad = math.radians(angle)
         x = circleRadius*math.sin(angleRad)
         y = circleRadius*math.cos(angleRad)
@@ -164,20 +161,13 @@ for rot, angleDev, response in zip(randTrials, values, response):
 #-------Analyze Data To do: Fit Logit model----
 #grabMeans = dataOut.groupby(['rotation'], as_index=False).mean()
 grabMeans = pd.DataFrame(columns=('rotation', 'accuracy'))
-<<<<<<< HEAD
 i=0
-=======
-
->>>>>>> 34d264f8b867734b5ec4243651ce77e60a323630
 for rot in np.unique(dataOut[['rotation']]):
     block_df = dataOut.loc[dataOut['rotation']==rot]
     mean_acc = block_df[['correct']].mean()
     grabMeans.loc[i] = [rot, mean_acc.correct]
-<<<<<<< HEAD
     i=i+1
-=======
 
->>>>>>> 34d264f8b867734b5ec4243651ce77e60a323630
 plt.figure(figsize=(6,6))
 sns.regplot(x='rotation', y='accuracy', data = grabMeans, fit_reg = False)
 plotfn =  _thisDir + os.sep +'data/%saccuracy_%s_.png' %(expInfo['User'], expName)
