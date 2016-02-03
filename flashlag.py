@@ -1,5 +1,5 @@
 #!/usr/bin/env python2
-
+#Author: P. Beukema February 2016
 import math
 import random
 import pandas as pd
@@ -112,7 +112,6 @@ for rot, angleDev, response in zip(randTrials, values, response):
 
 
     for angle in np.arange(0,361,8):
-        print angle
         angleRad = math.radians(angle)
         x = circleRadius*math.sin(angleRad)
         y = circleRadius*math.cos(angleRad)
@@ -156,12 +155,12 @@ for rot, angleDev, response in zip(randTrials, values, response):
 #-------Analyze Data To do: Fit Logit model----
 #grabMeans = dataOut.groupby(['rotation'], as_index=False).mean()
 grabMeans = pd.DataFrame(columns=('rotation', 'accuracy'))
-i = 0
+
 for rot in np.unique(dataOut[['rotation']]):
     block_df = dataOut.loc[dataOut['rotation']==rot]
     mean_acc = block_df[['correct']].mean()
     grabMeans.loc[i] = [rot, mean_acc.correct]
-    i = i + 1
+
 plt.figure(figsize=(6,6))
 sns.regplot(x='rotation', y='accuracy', data = grabMeans, fit_reg = False)
 plotfn =  _thisDir + os.sep +'data/%saccuracy_%s_.png' %(expInfo['User'], expName)
