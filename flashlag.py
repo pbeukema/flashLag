@@ -50,13 +50,8 @@ clockDot = visual.GratingStim(win = win, mask = 'gauss', size = dotRad, color = 
 flashDot = visual.GratingStim(win = win, mask = 'gauss', units='pix', size = flashRad,color = 'yellow')
 
 # Build vector of trials, dynamically generated for each new user
-<<<<<<< HEAD
 trialType = np.repeat([-32,-16,-8,0,8,16,32],10) # 20 trials for each of 5 conditions
 myDict = {'-32': 'down', '-16': 'down', '-8': 'down', '0': 'down', '8': 'up', '16': 'up', '32': 'up'}
-=======
-trialType = np.repeat([-32,-16,0,16,32,48],20) # 20 trials for each of 5 conditions
-myDict = {'-32': 'down', '-16': 'down', '0': 'down', '16': 'up', '32': 'up', '48': 'up'}
->>>>>>> 34d264f8b867734b5ec4243651ce77e60a323630
 randTrials = np.random.permutation(trialType)
 response = [myDict[str(i)] for i in randTrials]
 anglePres = np.arange(88,264,8) # yellow flash
