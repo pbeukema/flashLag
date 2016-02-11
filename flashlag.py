@@ -12,6 +12,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 from psychopy import visual, core, event, gui, data
+from sklearn import linear_model
 
 # Grab user info and set up output files for analysis
 _thisDir = os.path.dirname(os.path.abspath(__file__))
@@ -25,6 +26,7 @@ expInfo['expName'] = expName
 outputfn =  _thisDir + os.sep +'data/%s_%s_%s.csv' %(expInfo['User'], expName, expInfo['date'])
 dataOut = pd.DataFrame(columns = ('response','correct','rotation'))
 grabMeans = pd.DataFrame()
+deg_sign= u'\N{DEGREE SIGN}'
 
 '''
 Initalize stimuli parameters
@@ -52,7 +54,7 @@ flashDot = visual.GratingStim(win = win, mask = 'gauss', units='pix', size = fla
 # Build vector of trials, dynamically generated for each new user
 
 
-trialType = np.repeat([-32,-16,-8,0,8,16,32],10) # 20 trials for each of 5
+trialType = np.repeat([-32,-16,-8,0,8,16,32],20) # 20 trials for each of 5
 myDict = {'-32': 'down', '-16': 'down', '-8': 'down', '0': 'down', '8': 'up', '16': 'up', '32': 'up'}
 randTrials = np.random.permutation(trialType)
 response = [myDict[str(i)] for i in randTrials]
@@ -92,7 +94,7 @@ for thisComponent in InstructionsComponents:
 
 #-------End Routine "Instructions"-------
 win.flip()
-core.wait(3)
+core.wait(2)
 fixSpot.setAutoDraw(False)
 
 #-------Start Routine "Main Experiment"-------
@@ -112,8 +114,6 @@ for rot, angleDev, response in zip(randTrials, values, response):
     win.flip()
     core.wait(.8)
 
-
-
     for angle in np.arange(0,361,8):
         angleRad = math.radians(angle)
         x = circleRadius*math.sin(angleRad)
@@ -127,7 +127,7 @@ for rot, angleDev, response in zip(randTrials, values, response):
             y2 = flashRadius*math.cos(angleRad)
             flash = True
         # set position of flash
-        if frameN <= 1 and flash: # show flash for 4 frames
+        if frameN <= 1 and flash: # show flash for 1 frames
             flashDot.setPos([x2,y2])
             flashDot.draw()
             frameN = frameN+1
@@ -155,7 +155,7 @@ for rot, angleDev, response in zip(randTrials, values, response):
     core.wait(.5)
 #-------End Routine "Main Experiment"-------
 
-#-------Analyze Data To do: Fit Logit model----
+#-------Summarize data and fit logistic regression----
 #grabMeans = dataOut.groupby(['rotation'], as_index=False).mean()
 grabMeans = pd.DataFrame(columns=('rotation', 'accuracy'))
 i=0
@@ -165,13 +165,13 @@ for rot in np.unique(dataOut[['rotation']]):
     grabMeans.loc[i] = [rot, mean_acc.correct]
     i=i+1
 
-data_out.loc[data_out.response == 'down', ['response']] = 0
-data_out.loc[data_out.response == 'up', ['response']] = 1
-data_out[['response']] = data_out[['response']].astype(float)
-X = np.array(data_out['rotation'])
+dataOut.loc[dataOut.response == 'down', ['response']] = 0
+dataOut.loc[dataOut.response == 'up', ['response']] = 1
+dataOut[['response']] = dataOut[['response']].astype(float)
+X = np.array(dataOut['rotation'])
 X = X[:,np.newaxis]
 #X = X/np.linalg.norm(X)
-Y = np.array(data_out['response'])
+Y = np.array(dataOut['response'])
 clf = linear_model.LogisticRegression()
 clf.fit(X, Y)
 
@@ -181,18 +181,32 @@ B = clf.coef_
 x=PSE
 precision =  -(B/(1 + np.exp(A + B*x))**2) + B/(1 + np.exp(A + B*x))
 
+#Generate figure summary, and output summary annotated graph
 plt.figure(figsize=(6,6))
-g = sns.lmplot(x="rotation", y="response", data=dataOut,logistic=True, y_jitter=.05);
-deg_sign= u'\N{DEGREE SIGN}'
-xaxis_label = "Rotation(%s)"% (deg_sign)
-g = g.set_axis_labels(xaxis_label, "Reported Flash Appearance").set(xlim=(-40, 40), ylim=(-.25, 1.25),xticks=[-32,-16,-8,0,8,16,32], yticks=[0, .5, 1], yticklabels = ['Before', '0.5','Ahead'])
+g = sns.lmplot(x="rotation", y="response", data=dataOut,logistic=True, y_jitter=.02);
+rots = np.unique(dataOut[['rotation']])
+maxx = max(rots) + 5
+minx = min(rots) - 5
+xaxlabel = "Rotation(%s)"% (deg_sign)
+yaxlabel = "Reported Flash Appearance"
+ytics = ['Before', ' ','Ahead']
+g = g.set_axis_labels(xaxlabel, yaxlabel).set(xlim=(minx, maxx), ylim=(-.25, 1.25),xticks=rots, yticks=[0, .5, 1], yticklabels = ytics)
 h = plt.scatter(PSE,.5,s=50, facecolor='black')
 PSE = (clf.intercept_/-clf.coef_)[0][0]
-precision =  -(B/(1 + np.exp(A + B*x))**2) + B/(1 + np.exp(A + B*x))
-PSE = "%.2f" % PSE
-precision = "%.3f" % precision
-annotation = " P.S.E. = %s%s , Slope = %s" % (PSE,deg_sign, precision)
+precision =  -(B/(1 + np.exp(A + B*x))**2) + B/(1 + np.exp(A + B*x)) #==slope at PSE
+PSE_trunc = "%.2f" % PSE
+precision_trunc = "%.3f" % precision
+annotation = "P.S.E. = %s%s\nSlope = %s" % (PSE_trunc,deg_sign, precision_trunc)
 plt.annotate(annotation, xy = (PSE,.5),xytext = (-5, 5), textcoords = 'offset points', ha = 'right', va = 'bottom')
-
 plotfn =  _thisDir + os.sep +'data/%saccuracy_%s_.png' %(expInfo['User'], expName)
 plt.savefig(plotfn)
+
+#generate summary data files
+summary_analysis = pd.DataFrame(columns=('PSE', 'Precision'))
+summary_analysis.loc[0] = [PSE, precision[0][0]]
+
+#save datafiles to csv, note raw data saved above after each keystroke, here is summary data
+meansfn =  _thisDir + os.sep +'data/%smeans_%s_.png' %(expInfo['User'], expName)
+summaryfn =  _thisDir + os.sep +'data/%ssummary_%s_.png' %(expInfo['User'], expName)
+grabMeans.to_csv(meansfn, index = False)
+summary_analysis.to_csv(summaryfn, index = False)
