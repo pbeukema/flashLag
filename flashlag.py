@@ -50,13 +50,8 @@ clockDot = visual.GratingStim(win = win, mask = 'gauss', size = dotRad, color = 
 flashDot = visual.GratingStim(win = win, mask = 'gauss', units='pix', size = flashRad,color = 'yellow')
 
 # Build vector of trials, dynamically generated for each new user
-<<<<<<< HEAD
-trialType = np.repeat([-32,-16,-8,0,8,16,32],10) # 20 trials for each of 5 conditions
+trialType = np.repeat([-32,-16,-8,0,8,16,32],1) # 20 trials for each of 5 conditions
 myDict = {'-32': 'down', '-16': 'down', '-8': 'down', '0': 'down', '8': 'up', '16': 'up', '32': 'up'}
-=======
-trialType = np.repeat([-32,-16,0,16,32,48],20) # 20 trials for each of 5 conditions
-myDict = {'-32': 'down', '-16': 'down', '0': 'down', '16': 'up', '32': 'up', '48': 'up'}
->>>>>>> 34d264f8b867734b5ec4243651ce77e60a323630
 randTrials = np.random.permutation(trialType)
 response = [myDict[str(i)] for i in randTrials]
 anglePres = np.arange(88,264,8) # yellow flash
@@ -116,11 +111,8 @@ for rot, angleDev, response in zip(randTrials, values, response):
     core.wait(.8)
 
 
-<<<<<<< HEAD
-    for angle in np.arange(0,361,4):
-=======
+
     for angle in np.arange(0,361,8):
->>>>>>> 34d264f8b867734b5ec4243651ce77e60a323630
         angleRad = math.radians(angle)
         x = circleRadius*math.sin(angleRad)
         y = circleRadius*math.cos(angleRad)
@@ -164,21 +156,39 @@ for rot, angleDev, response in zip(randTrials, values, response):
 #-------Analyze Data To do: Fit Logit model----
 #grabMeans = dataOut.groupby(['rotation'], as_index=False).mean()
 grabMeans = pd.DataFrame(columns=('rotation', 'accuracy'))
-<<<<<<< HEAD
 i=0
-=======
-
->>>>>>> 34d264f8b867734b5ec4243651ce77e60a323630
 for rot in np.unique(dataOut[['rotation']]):
     block_df = dataOut.loc[dataOut['rotation']==rot]
     mean_acc = block_df[['correct']].mean()
     grabMeans.loc[i] = [rot, mean_acc.correct]
-<<<<<<< HEAD
     i=i+1
-=======
+data_out.loc[data_out.response == 'down', ['response']] = 0
+data_out.loc[data_out.response == 'up', ['response']] = 1
+data_out[['response']] = data_out[['response']].astype(float)
+X = np.array(data_out['rotation'])
+X = X[:,np.newaxis]
+#X = X/np.linalg.norm(X)
+Y = np.array(data_out['response'])
+clf = linear_model.LogisticRegression()
+clf.fit(X, Y)
 
->>>>>>> 34d264f8b867734b5ec4243651ce77e60a323630
+PSE = (clf.intercept_/-clf.coef_)[0][0] #Point of Subjective Equality
+A = clf.intercept_
+B = clf.coef_
+x=PSE
+precision =  -(B/(1 + np.exp(A + B*x))**2) + B/(1 + np.exp(A + B*x))
 plt.figure(figsize=(6,6))
-sns.regplot(x='rotation', y='accuracy', data = grabMeans, fit_reg = False)
+g = sns.lmplot(x="rotation", y="response", data=dataOut,logistic=True, y_jitter=.05);
+deg_sign= u'\N{DEGREE SIGN}'
+xaxis_label = "Rotation(%s)"% (deg_sign)
+g = g.set_axis_labels(xaxis_label, "Reported Flash Appearance").set(xlim=(-40, 40), ylim=(-.25, 1.25),xticks=[-32,-16,-8,0,8,16,32], yticks=[0, .5, 1], yticklabels = ['Before', '0.5','Ahead'])
+h = plt.scatter(PSE,.5,s=50, facecolor='black')
+PSE = (clf.intercept_/-clf.coef_)[0][0]
+precision =  -(B/(1 + np.exp(A + B*x))**2) + B/(1 + np.exp(A + B*x))
+PSE = "%.2f" % PSE
+precision = "%.3f" % precision
+annotation = " P.S.E. = %s%s , Slope = %s" % (PSE,deg_sign, precision)
+plt.annotate(annotation, xy = (PSE,.5),xytext = (-5, 5), textcoords = 'offset points', ha = 'right', va = 'bottom')
+
 plotfn =  _thisDir + os.sep +'data/%saccuracy_%s_.png' %(expInfo['User'], expName)
 plt.savefig(plotfn)
