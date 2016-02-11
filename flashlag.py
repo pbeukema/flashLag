@@ -50,7 +50,9 @@ clockDot = visual.GratingStim(win = win, mask = 'gauss', size = dotRad, color = 
 flashDot = visual.GratingStim(win = win, mask = 'gauss', units='pix', size = flashRad,color = 'yellow')
 
 # Build vector of trials, dynamically generated for each new user
-trialType = np.repeat([-32,-16,-8,0,8,16,32],1) # 20 trials for each of 5 conditions
+
+
+trialType = np.repeat([-32,-16,-8,0,8,16,32],10) # 20 trials for each of 5
 myDict = {'-32': 'down', '-16': 'down', '-8': 'down', '0': 'down', '8': 'up', '16': 'up', '32': 'up'}
 randTrials = np.random.permutation(trialType)
 response = [myDict[str(i)] for i in randTrials]
@@ -162,6 +164,7 @@ for rot in np.unique(dataOut[['rotation']]):
     mean_acc = block_df[['correct']].mean()
     grabMeans.loc[i] = [rot, mean_acc.correct]
     i=i+1
+
 data_out.loc[data_out.response == 'down', ['response']] = 0
 data_out.loc[data_out.response == 'up', ['response']] = 1
 data_out[['response']] = data_out[['response']].astype(float)
@@ -177,6 +180,7 @@ A = clf.intercept_
 B = clf.coef_
 x=PSE
 precision =  -(B/(1 + np.exp(A + B*x))**2) + B/(1 + np.exp(A + B*x))
+
 plt.figure(figsize=(6,6))
 g = sns.lmplot(x="rotation", y="response", data=dataOut,logistic=True, y_jitter=.05);
 deg_sign= u'\N{DEGREE SIGN}'
