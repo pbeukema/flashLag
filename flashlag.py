@@ -23,7 +23,8 @@ dlg = gui.DlgFromDict(dictionary=expInfo, title=expName)
 if dlg.OK == False: core.quit()
 expInfo['date'] = data.getDateStr()
 expInfo['expName'] = expName
-outputfn =  _thisDir + os.sep +'data/%s_%s_%s.csv' %(expInfo['User'], expName, expInfo['date'])
+outputfn =  _thisDir + os.sep +'data/%s_%s_%s.csv' %(expInfo['User'], \
+            expName, expInfo['date'])
 dataOut = pd.DataFrame(columns = ('response','correct','rotation'))
 grabMeans = pd.DataFrame()
 deg_sign= u'\N{DEGREE SIGN}'
@@ -41,20 +42,19 @@ circleRadius = 300
 flashRadius = circleRadius+35 # displacement from target in pixels
 
 # Set up Window
-win = visual.Window([1000,1000], monitor = 'testMonitor', color = [-1,-1,-1], colorSpace = 'rgb', blendMode = 'avg', useFBO = True, allowGUI = False,fullscr=True)
+win = visual.Window([1000,1000], monitor = 'testMonitor', color = [-1,-1,-1], \
+       colorSpace = 'rgb', blendMode = 'avg', useFBO = True, allowGUI = \
+       False,fullscr=True)
 
 # Initalize Instructions Text
-instrText = visual.TextStim(win = win, ori = 0, name = 'instrText', \
-            text=u'\n In this experiment you will observe a rotating white \
-            sphere and a flashed yellow sphere. \n If the flash appears behind \
-            the white sphere, press \u2193. \n If the flash appears ahead of \
-            the white sphere, press \u2191. \n Press any key continue.', \
-            font = u'Arial',  pos = [0, 0], height = 0.05, wrapWidth = None,\
-            color = u'white', colorSpace = 'rgb', opacity = 1, depth = 0.0)
+instrText = visual.TextStim(win = win, ori = 0, name = 'instrText', text=u'\n In this experiment you will observe a rotating white sphere and a flashed yellow sphere. \n If the flash appears behind the white sphere, press \u2193 (down arrow). \n If the flash appears ahead of the white sphere, press \u2191 (up arrow). \n Press any key continue.', font = u'Arial',  pos = [0, 0], height = 0.05, wrapWidth = None, color = u'white', colorSpace = 'rgb', opacity = 1, depth = 0.0)
 
-fixSpot = visual.GratingStim(win, tex = None, mask = 'gauss', size = (20,20), units='pix', color = 'white', autoDraw = False)
-clockDot = visual.GratingStim(win = win, mask = 'gauss', size = dotRad, color = 'white', units='pix', opacity = '0.9', autoDraw=False)
-flashDot = visual.GratingStim(win = win, mask = 'gauss', units='pix', size = flashRad,color = 'yellow')
+fixSpot = visual.GratingStim(win, tex = None, mask = 'gauss', size = (20,20), \
+          units='pix', color = 'white', autoDraw = False)
+clockDot = visual.GratingStim(win = win, mask = 'gauss', size = dotRad, \
+           color = 'white', units='pix', opacity = '0.9', autoDraw=False)
+flashDot = visual.GratingStim(win = win, mask = 'gauss', units='pix', \
+           size = flashRad,color = 'yellow')
 
 # Build vector of trials, dynamically generated for each new user
 
