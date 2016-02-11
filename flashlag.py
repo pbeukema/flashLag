@@ -44,8 +44,13 @@ flashRadius = circleRadius+35 # displacement from target in pixels
 win = visual.Window([1000,1000], monitor = 'testMonitor', color = [-1,-1,-1], colorSpace = 'rgb', blendMode = 'avg', useFBO = True, allowGUI = False,fullscr=True)
 
 # Initalize Instructions Text
-instrText = visual.TextStim(win = win, ori = 0, name = 'instrText',
-    text=u'\n In this experiment you will observe a rotating white sphere and a flashed yellow sphere. \n If the flash appears behind the white sphere, press \u2193. \n If the flash appears ahead of the white sphere, press \u2191. \n \n Press any key continue.', font = u'Arial',  pos = [0, 0], height = 0.05, wrapWidth = None, color = u'white', colorSpace = 'rgb', opacity = 1, depth = 0.0)
+instrText = visual.TextStim(win = win, ori = 0, name = 'instrText', \
+            text=u'\n In this experiment you will observe a rotating white \
+            sphere and a flashed yellow sphere. \n If the flash appears behind \
+            the white sphere, press \u2193. \n If the flash appears ahead of \
+            the white sphere, press \u2191. \n Press any key continue.', \
+            font = u'Arial',  pos = [0, 0], height = 0.05, wrapWidth = None,\
+            color = u'white', colorSpace = 'rgb', opacity = 1, depth = 0.0)
 
 fixSpot = visual.GratingStim(win, tex = None, mask = 'gauss', size = (20,20), units='pix', color = 'white', autoDraw = False)
 clockDot = visual.GratingStim(win = win, mask = 'gauss', size = dotRad, color = 'white', units='pix', opacity = '0.9', autoDraw=False)
@@ -193,12 +198,14 @@ ytics = ['Before', ' ','Ahead']
 g = g.set_axis_labels(xaxlabel, yaxlabel).set(xlim=(minx, maxx), ylim=(-.25, 1.25),xticks=rots, yticks=[0, .5, 1], yticklabels = ytics)
 h = plt.scatter(PSE,.5,s=50, facecolor='black')
 PSE = (clf.intercept_/-clf.coef_)[0][0]
-precision =  -(B/(1 + np.exp(A + B*x))**2) + B/(1 + np.exp(A + B*x)) #==slope at PSE
+precision =  -(B/(1 + np.exp(A + B*x))**2) + B/(1 + np.exp(A + B*x))
 PSE_trunc = "%.2f" % PSE
 precision_trunc = "%.3f" % precision
 annotation = "P.S.E. = %s%s\nSlope = %s" % (PSE_trunc,deg_sign, precision_trunc)
-plt.annotate(annotation, xy = (PSE,.5),xytext = (-5, 5), textcoords = 'offset points', ha = 'right', va = 'bottom')
-plotfn =  _thisDir + os.sep +'data/%saccuracy_%s_.png' %(expInfo['User'], expName)
+plt.annotate(annotation, xy = (PSE,.5),xytext = (-5, 5), textcoords = 'offset \
+             points', ha = 'right', va = 'bottom')
+plotfn =  _thisDir + os.sep +'data/%saccuracy_%s_.png' %(expInfo['User'], \
+          expName)
 plt.savefig(plotfn)
 
 #generate summary data files
