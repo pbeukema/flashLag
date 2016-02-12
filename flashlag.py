@@ -213,7 +213,7 @@ summary_analysis = pd.DataFrame(columns=('PSE', 'Precision'))
 summary_analysis.loc[0] = [PSE, precision[0][0]]
 
 #save datafiles to csv, note raw data saved above after each keystroke, here is summary data
-meansfn =  _thisDir + os.sep +'data/%smeans_%s_.png' %(expInfo['User'], expName)
-summaryfn =  _thisDir + os.sep +'data/%ssummary_%s_.png' %(expInfo['User'], expName)
+meansfn =  _thisDir + os.sep +'data/%smeans_%s_.csv' %(expInfo['User'], expName)
+summaryfn =  _thisDir + os.sep +'data/%ssummary_%s_.csv' %(expInfo['User'], expName)
 grabMeans.to_csv(meansfn, index = False)
 summary_analysis.to_csv(summaryfn, index = False)
