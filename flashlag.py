@@ -38,7 +38,7 @@ tested on 1920x1080 (widescreen) display
 
 dotRad = (55,55)
 flashRad = (55,55)
-circleRadius = 300
+circleRadius = 125
 flashRadius = circleRadius+35 # displacement from target in pixels
 
 # Set up Window
@@ -47,7 +47,9 @@ win = visual.Window([1000,1000], monitor = 'testMonitor', color = [-1,-1,-1], \
        False,fullscr=True)
 
 # Initalize Instructions Text
-instrText = visual.TextStim(win = win, ori = 0, name = 'instrText', text=u'\n In this experiment you will observe a rotating white sphere and a flashed yellow sphere. \n If the flash appears behind the white sphere, press \u2193 (down arrow). \n If the flash appears ahead of the white sphere, press \u2191 (up arrow). \n Press any key continue.', font = u'Arial',  pos = [0, 0], height = 0.05, wrapWidth = None, color = u'white', colorSpace = 'rgb', opacity = 1, depth = 0.0)
+instructions = '====================================================== \n This is a test of how well you can see movement and track relative motion. For each trial you will see a blinking white light moving along a circular path. As the white light moves around in a circle, there will also be a single yellow flash. The yello flash will appear at different points around the path of the white light. \n \n Your task is to determine if the yellow flash appears ahead of the blinking white light, or behind it. \n \n Some trials will be easier than others. Don\'t worry if you find some of these trials very difficult, just do your best. Try to track the white blinking light as it moves around, and look for the yellow flash. If the yellow flash appears ahead of the blinking white light, press the \'up\' arrow. If the yellow flash appears behind the blinking white light, press the \'down\' arrow.\n \n  If you are unsure about your response, make your best guess. The entire test takes 3 minutes. Get ready, and press any key to begin. ====================================================== '
+
+instrText = visual.TextStim(win = win, ori = 0, name = 'instrText', text=instructions, font = u'Arial',  pos = [0, 0], height = 0.05, wrapWidth = None, color = u'white', colorSpace = 'rgb', opacity = 1, depth = 0.0)
 
 fixSpot = visual.GratingStim(win, tex = None, mask = 'gauss', size = (20,20), \
           units='pix', color = 'white', autoDraw = False)
