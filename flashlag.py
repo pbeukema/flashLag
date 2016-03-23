@@ -263,7 +263,7 @@ expCompletedText.setAutoDraw(True)
 win.flip()
 
 #-------Summarize data and fit logistic regression----
-print 'I am here'
+
 #grabMeans = dataOut.groupby(['rotation'], as_index=False).mean()
 grabMeans = pd.DataFrame(columns=('rotation', 'accuracy'))
 i=0
