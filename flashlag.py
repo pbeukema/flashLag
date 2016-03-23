@@ -217,7 +217,7 @@ for rot, angleDev, response in zip(randTrials, values, response):
     win.flip()
     core.wait(.8)
 
-    for angle in np.arange(0,361,360):
+    for angle in np.arange(0,361,8):
         angleRad = math.radians(angle)
         x = circleRadius*math.sin(angleRad)
         y = circleRadius*math.cos(angleRad)
