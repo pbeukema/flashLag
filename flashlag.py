@@ -47,9 +47,14 @@ win = visual.Window([1000,1000], monitor = 'testMonitor', color = [-1,-1,-1], \
        False,fullscr=True)
 
 # Initalize Instructions Text
-instructions = '====================================================== \n This is a test of how well you can see movement and track relative motion. For each trial you will see a blinking white light moving along a circular path. As the white light moves around in a circle, there will also be a single yellow flash. The yello flash will appear at different points around the path of the white light. \n \n Your task is to determine if the yellow flash appears ahead of the blinking white light, or behind it. \n \n Some trials will be easier than others. Don\'t worry if you find some of these trials very difficult, just do your best. Try to track the white blinking light as it moves around, and look for the yellow flash. If the yellow flash appears ahead of the blinking white light, press the \'up\' arrow. If the yellow flash appears behind the blinking white light, press the \'down\' arrow.\n \n  If you are unsure about your response, make your best guess. The entire test takes 3 minutes. Get ready, and press any key to begin. ====================================================== '
+instructions = '====================================================== \n This is a test of how well you can see movement and track relative motion. For each trial you will see a blinking white light moving along a circular path. As the white light moves around in a circle, there will also be a single yellow flash. The yello flash will appear at different points around the path of the white light. \n \n Your task is to determine if the yellow flash appears ahead of the blinking white light, or behind it. \n \n Some trials will be easier than others. Don\'t worry if you find some of these trials very difficult, just do your best. Try to track the white blinking light as it moves around, and look for the yellow flash. If the yellow flash appears ahead of the blinking white light, press the \'up\' arrow. If the yellow flash appears behind the blinking white light, press the \'down\' arrow.\n \n  If you are unsure about your response, make your best guess. The entire test takes 3 minutes. \n \n The first trials will be a practice session to acquaint you with the requirements, followed by a window signalling the actual test.  Get ready, and press any key to begin. ====================================================== '
 
+instructions_Practice = 'End of practice session. Press any key to continue.'
+expCompletedText = 'End of Testing. Thank you.'
 instrText = visual.TextStim(win = win, ori = 0, name = 'instrText', text=instructions, font = u'Arial',  pos = [0, 0], height = 0.05, wrapWidth = None, color = u'white', colorSpace = 'rgb', opacity = 1, depth = 0.0)
+
+instrPracticeText = visual.TextStim(win = win, ori = 0, name = 'instrText', text=instructions_Practice, font = u'Arial',  pos = [0, 0], height = 0.05, wrapWidth = None, color = u'white', colorSpace = 'rgb', opacity = 1, depth = 0.0)
+
 
 fixSpot = visual.GratingStim(win, tex = None, mask = 'gauss', size = (20,20), \
           units='pix', color = 'white', autoDraw = False)
@@ -104,6 +109,97 @@ win.flip()
 core.wait(2)
 fixSpot.setAutoDraw(False)
 
+
+practiceTrials = np.repeat([-32,-16,-8,0,8,16,32],1) # 20 trials for each of 5
+anglePres = np.arange(88,264,8) # yellow flash
+values = [random.choice(anglePres) for _ in xrange(100)]
+
+#-------Start Routine "Practice Experiment"-------
+for rot, angleDev, prac_response in zip(practiceTrials, values, response):
+    if 'escape' in theseKeys:
+        core.quit()
+    frameN = 0
+    flash = False
+
+    # project sphere for 800 ms so that user directs focus to sphere
+    angleRad = math.radians(0)
+    x = circleRadius*math.sin(angleRad)
+    y = circleRadius*math.cos(angleRad)
+    clockDot.setPos([x,y])
+    clockDot.setAutoDraw(True)
+    clockDot.draw()
+    win.flip()
+    core.wait(.8)
+
+    for angle in np.arange(0,361,8):
+        angleRad = math.radians(angle)
+        x = circleRadius*math.sin(angleRad)
+        y = circleRadius*math.cos(angleRad)
+        clockDot.setPos([x,y])
+        clockDot.draw()
+        if angle == angleDev:
+            angleMark = angle
+            angleRad = math.radians(angleMark+rot)
+            x2 = flashRadius*math.sin(angleRad)
+            y2 = flashRadius*math.cos(angleRad)
+            flash = True
+        # set position of flash
+        if frameN <= 1 and flash: # show flash for 1 frames
+            flashDot.setPos([x2,y2])
+            flashDot.draw()
+            frameN = frameN+1
+        win.flip()
+        if event.getKeys(keyList ='escape'):
+            core.quit()
+        event.clearEvents('mouse')
+
+    # Turn off stimulus and wait for response
+    clockDot.setAutoDraw(False)
+    win.update()
+    win.flip()
+    theseKeys = event.waitKeys(float('inf'), keyList=('up', 'down', 'escape'), timeStamped = False)
+
+    # Check if user wants to quit
+    if 'escape' in theseKeys:
+        core.quit()
+    core.wait(.5)
+
+#Instructions for Practice Epxeriment
+#-------Set Up Routine "Practice"-------
+notStarted = 0
+started = 1
+instructions2_response = event.BuilderKeyResponse()
+instructions2_response.status = notStarted
+InstructionsComponents2 = []
+InstructionsComponents2.append(instrPracticeText)
+InstructionsComponents2.append(instructions_response)
+for thisComponent in InstructionsComponents2:
+    if hasattr(thisComponent, 'status'):
+        thisComponent.status = notStarted
+
+#-------Start Routine "Instructions"-------
+continueRoutine = True
+endExpNow = False
+while continueRoutine:
+    instrPracticeText.setAutoDraw(True)
+    theseKeys = event.getKeys()
+    if 'escape' in theseKeys:
+        endExpNow = True
+    if len(theseKeys) > 0:
+        continueRoutine = False
+    if endExpNow or event.getKeys(keyList=['escape']):
+        core.quit()
+    if continueRoutine:
+        win.flip()
+
+for thisComponent in InstructionsComponents2:
+    if hasattr(thisComponent, 'setAutoDraw'):
+        thisComponent.setAutoDraw(False)
+
+#-------End Routine "Practice"-------
+win.flip()
+core.wait(2)
+
 #-------Start Routine "Main Experiment"-------
 for rot, angleDev, response in zip(randTrials, values, response):
     if 'escape' in theseKeys:
@@ -121,7 +217,7 @@ for rot, angleDev, response in zip(randTrials, values, response):
     win.flip()
     core.wait(.8)
 
-    for angle in np.arange(0,361,8):
+    for angle in np.arange(0,361,360):
         angleRad = math.radians(angle)
         x = circleRadius*math.sin(angleRad)
         y = circleRadius*math.cos(angleRad)
@@ -219,3 +315,36 @@ meansfn =  _thisDir + os.sep +'data/%smeans_%s_.csv' %(expInfo['User'], expName)
 summaryfn =  _thisDir + os.sep +'data/%ssummary_%s_.csv' %(expInfo['User'], expName)
 grabMeans.to_csv(meansfn, index = False)
 summary_analysis.to_csv(summaryfn, index = False)
+
+
+#Run this routine after completing the analysis to make sure that it is not overwritten
+#-------Set Up Routine "Practice"-------
+notStarted = 0
+started = 1
+instructions3_response = event.BuilderKeyResponse()
+instructions3_response.status = notStarted
+InstructionsComponents3 = []
+InstructionsComponents3.append(expCompletedText)
+InstructionsComponents3.append(instructions_response)
+for thisComponent in InstructionsComponents3:
+    if hasattr(thisComponent, 'status'):
+        thisComponent.status = notStarted
+
+#-------Start Routine "Instructions"-------
+continueRoutine = True
+endExpNow = False
+while continueRoutine:
+    expCompletedText.setAutoDraw(True)
+    theseKeys = event.getKeys()
+    if 'escape' in theseKeys:
+        endExpNow = True
+    if len(theseKeys) > 0:
+        continueRoutine = False
+    if endExpNow or event.getKeys(keyList=['escape']):
+        core.quit()
+    if continueRoutine:
+        win.flip()
+
+for thisComponent in InstructionsComponents3:
+    if hasattr(thisComponent, 'setAutoDraw'):
+        thisComponent.setAutoDraw(False)
