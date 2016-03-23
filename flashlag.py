@@ -47,13 +47,15 @@ win = visual.Window([1000,1000], monitor = 'testMonitor', color = [-1,-1,-1], \
        False,fullscr=True)
 
 # Initalize Instructions Text
-instructions = '====================================================== \n This is a test of how well you can see movement and track relative motion. For each trial you will see a blinking white light moving along a circular path. As the white light moves around in a circle, there will also be a single yellow flash. The yello flash will appear at different points around the path of the white light. \n \n Your task is to determine if the yellow flash appears ahead of the blinking white light, or behind it. \n \n Some trials will be easier than others. Don\'t worry if you find some of these trials very difficult, just do your best. Try to track the white blinking light as it moves around, and look for the yellow flash. If the yellow flash appears ahead of the blinking white light, press the \'up\' arrow. If the yellow flash appears behind the blinking white light, press the \'down\' arrow.\n \n  If you are unsure about your response, make your best guess. The entire test takes 3 minutes. \n \n The first trials will be a practice session to acquaint you with the requirements, followed by a window signalling the actual test.  Get ready, and press any key to begin. ====================================================== '
+instructions = '====================================================== \n This is a test of how well you can see movement and track relative motion. For each trial you will see a blinking white light moving along a circular path. As the white light moves around in a circle, there will also be a single yellow flash. The yellow flash will appear at different points around the path of the white light. \n \n Your task is to determine if the yellow flash appears ahead of the blinking white light, or behind it. \n \n Some trials will be easier than others. Don\'t worry if you find some of these trials very difficult, just do your best. Try to track the white blinking light as it moves around, and look for the yellow flash. If the yellow flash appears ahead of the blinking white light, press the \'up\' arrow. If the yellow flash appears behind the blinking white light, press the \'down\' arrow.\n \n  If you are unsure about your response, make your best guess. The entire test takes 3 minutes. \n \n The first trials will be a practice session to acquaint you with the requirements, followed by a window signalling the actual test.  Get ready, and press any key to begin. ====================================================== '
 
 instructions_Practice = 'End of practice session. Press any key to continue.'
-expCompletedText = 'End of Testing. Thank you.'
+completedText = 'End of Testing. Thank you.'
 instrText = visual.TextStim(win = win, ori = 0, name = 'instrText', text=instructions, font = u'Arial',  pos = [0, 0], height = 0.05, wrapWidth = None, color = u'white', colorSpace = 'rgb', opacity = 1, depth = 0.0)
 
 instrPracticeText = visual.TextStim(win = win, ori = 0, name = 'instrText', text=instructions_Practice, font = u'Arial',  pos = [0, 0], height = 0.05, wrapWidth = None, color = u'white', colorSpace = 'rgb', opacity = 1, depth = 0.0)
+
+expCompletedText = visual.TextStim(win = win, ori = 0, name = 'instrText', text=completedText, font = u'Arial',  pos = [0, 0], height = 0.05, wrapWidth = None, color = u'white', colorSpace = 'rgb', opacity = 1, depth = 0.0)
 
 
 fixSpot = visual.GratingStim(win, tex = None, mask = 'gauss', size = (20,20), \
@@ -257,8 +259,11 @@ for rot, angleDev, response in zip(randTrials, values, response):
 
     core.wait(.5)
 #-------End Routine "Main Experiment"-------
+expCompletedText.setAutoDraw(True)
+win.flip()
 
 #-------Summarize data and fit logistic regression----
+print 'I am here'
 #grabMeans = dataOut.groupby(['rotation'], as_index=False).mean()
 grabMeans = pd.DataFrame(columns=('rotation', 'accuracy'))
 i=0
@@ -317,8 +322,7 @@ grabMeans.to_csv(meansfn, index = False)
 summary_analysis.to_csv(summaryfn, index = False)
 
 
-#Run this routine after completing the analysis to make sure that it is not overwritten
-#-------Set Up Routine "Practice"-------
+#-------Set Up Routine "Experiment Complete"-------
 notStarted = 0
 started = 1
 instructions3_response = event.BuilderKeyResponse()

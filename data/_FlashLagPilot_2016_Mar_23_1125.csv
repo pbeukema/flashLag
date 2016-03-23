@@ -1,0 +1,8 @@
+response,correct,rotation
+down,True,0.0
+down,True,-8.0
+up,False,-32.0
+up,True,8.0
+down,False,32.0
+down,True,-16.0
+down,False,16.0
