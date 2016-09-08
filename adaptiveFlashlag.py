@@ -44,10 +44,10 @@ flashRadius = circleRadius+35 # displacement from target in pixels
 # Set up Window
 win = visual.Window([1000,1000], monitor = 'testMonitor', color = [-1,-1,-1], \
        colorSpace = 'rgb', blendMode = 'avg', useFBO = True, allowGUI = \
-       False,fullscr=False)
+       False,fullscr=True)
 
 # Initalize Instructions Text
-instructions = '====================================================== \n Your task is to align the white cursor with the yellow cursor. On each trial, press the down arrow to move the yellow cursor clockwise and the up arrow to move the cursor anti-clockwise. When you judge the two cursors to be aligned, press the space bar ======================================================'
+instructions = '====================================================== \n Your task is to align the white cursor with the yellow cursor. On each trial, press the left arrow to move the yellow cursor clockwise and the right arrow to move the cursor anti-clockwise. When you judge the two cursors to be aligned, press the space bar ======================================================'
 completedText = 'End of Testing. Thank you.'
 
 instrText = visual.TextStim(win = win, ori = 0, name = 'instrText', text=instructions, font = u'Arial',  pos = [0, 0], height = 0.05, wrapWidth = None, color = u'white', colorSpace = 'rgb', opacity = 1, depth = 0.0)
@@ -106,7 +106,7 @@ core.wait(2)
 
 #-------Start Routine "Main Experiment"-------
 rot = -16
-angleDev = 90
+angleDev = 180
 expComplete = 0
 nTrials = 0 #to record how long it took subject to get to answer
 
@@ -126,7 +126,7 @@ while not expComplete:
     win.flip()
     core.wait(.8)
 
-    for angle in np.arange(0,361,2):
+    for angle in np.arange(0,361,4):
         angleRad = math.radians(angle)
         x = circleRadius*math.sin(angleRad)
         y = circleRadius*math.cos(angleRad)
@@ -152,7 +152,7 @@ while not expComplete:
     clockDot.setAutoDraw(False)
     win.update()
     win.flip()
-    theseKeys = event.waitKeys(float('inf'), keyList=('up', 'down', 'escape', 'space'), timeStamped = False)
+    theseKeys = event.waitKeys(float('inf'), keyList=('left', 'right', 'escape', 'space'), timeStamped = False)
 
     # Check if user wants to quit
     if 'escape' in theseKeys:
@@ -161,9 +161,9 @@ while not expComplete:
     key_response = theseKeys[0]
     print key_response
     # Check if the response was correct
-    if key_response == 'down':
+    if key_response == 'left':
         rot += 2
-    elif key_response == 'up':
+    elif key_response == 'right':
         rot += -2
     elif key_response == 'space':
         expComplete = True
