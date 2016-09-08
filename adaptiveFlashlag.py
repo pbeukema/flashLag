@@ -47,7 +47,7 @@ win = visual.Window([1000,1000], monitor = 'testMonitor', color = [-1,-1,-1], \
        False,fullscr=True)
 
 # Initalize Instructions Text
-instructions = '====================================================== \n Your task is to align the white cursor with the yellow cursor. On each trial, press the left arrow to move the yellow cursor clockwise and the right arrow to move the cursor anti-clockwise. When you judge the two cursors to be aligned, press the space bar ======================================================'
+instructions = '====================================================== \n Your task is to align the white cursor with the yellow flash at the bottom of the arc (180 degrees). On each trial, press the left arrow to move the yellow flash clockwise (leftwards) and the right arrow to move the yellow flash anti-clockwise (rightwards). When you judge the two cursors to be aligned, press the space bar. ======================================================'
 completedText = 'End of Testing. Thank you.'
 
 instrText = visual.TextStim(win = win, ori = 0, name = 'instrText', text=instructions, font = u'Arial',  pos = [0, 0], height = 0.05, wrapWidth = None, color = u'white', colorSpace = 'rgb', opacity = 1, depth = 0.0)
