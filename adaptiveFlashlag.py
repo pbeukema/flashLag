@@ -56,11 +56,11 @@ expCompletedText = visual.TextStim(win = win, ori = 0, name = 'instrText', text=
 
 
 fixSpot = visual.GratingStim(win, tex = None, mask = 'gauss', size = (20,20), \
-          units='pix', color = 'white', autoDraw = False)
+          units='pix', color = 'cyan', autoDraw = False)
 clockDot = visual.GratingStim(win = win, mask = 'gauss', size = dotRad, \
-           color = 'white', units='pix', opacity = '0.9', autoDraw=False)
+           color = 'white', units='pix', opacity = '1', autoDraw=False)
 flashDot = visual.GratingStim(win = win, mask = 'gauss', units='pix', \
-           size = flashRad,color = 'blue')
+           size = flashRad,color = 'yellow')
 
 
 #-------Set Up Routine "Instructions"-------
