@@ -113,13 +113,14 @@ keyMapDict = {'left': 1, 'right':-1}
 increment = 0 #start at super easy detection threshold
 trials = range(0,12) # do 10 trials
 devInc = [16,16,8,8,8,8,4,4,4,4,4,4, 2,2,2, 2,2,2, 2,2,2, 2,2,2, 2,2,2, 2,2,2, 2,2,2, 2,2,2, 2,2,2, 2,2,2, 2,2,2, 2,2,2, 2,2,2, 2,2,2, 2,2,2, 2,2,2, 2,2,2, 2,2,2, 2,2,2, 2,2,2, 2,2,2]
- 
+
 increment = 0
 expComplete = 0
 nFlips = 0
+maxFlips = 15
 key_prev = '0'
 for dev in devInc:
-    if nFlips == 15:
+    if nFlips == maxFlips:
         break
     if 'escape' in theseKeys:
         core.quit()
