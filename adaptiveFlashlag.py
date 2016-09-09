@@ -122,7 +122,7 @@ nFlips = 0
 maxFlips = 15
 key_prev = '0'
 for dev in allTrials:
-    if nFlips == maxFlips: 
+    if nFlips == maxFlips:
         break
     if 'escape' in theseKeys:
         core.quit()
@@ -179,10 +179,9 @@ for dev in allTrials:
         print nFlips
     # Check response
     if key_response == 'left': #user wants to push the flash backwards
-        increment = np.multiply(dev, 1)
-
+        increment += np.multiply(dev, 1)
     elif key_response == 'right': #user wants to push the flash forward
-        increment = np.multiply(dev, -1)
+        increment += np.multiply(dev, -1)
     elif key_response == 'space': #user judges stimuli to be aligned.
         expComplete = 1
     key_prev = key_response
