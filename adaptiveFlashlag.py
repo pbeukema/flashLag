@@ -44,7 +44,7 @@ flashRadius = circleRadius+35 # displacement from target in pixels
 # Set up Window
 win = visual.Window([1000,1000], monitor = 'testMonitor', color = [-1,-1,-1], \
        colorSpace = 'rgb', blendMode = 'avg', useFBO = True, allowGUI = \
-       False,fullscr=False,waitBlanking=False)
+       False,fullscr=True,waitBlanking=False)
 
 # Initalize Instructions Text
 instructions = '====================================================== \n In this task, you will see two dots appear on the screen. The first dot is white and will appear at the top center of your screen and move in a clockwise circle. The second dot is yellow and will flash in the bottom half of your screen. \n \n Your objective is to move the yellow flashing dot at the bottom of the screen to be vertically aligned with the white dot at the 6 o-clock position. Use the left and right arrow keys to move the yellow dot in your desired direction. Pressing the left arrow key will rotate the flash clockwise (leftwards), pressing the right arrow key will rotate the flash anti-clockwise (rightwards).  \n \n The dot only moves slightly after each press, so you may have to hit the arrow keys multiple times before you notice any large movement. When you believe that the yellow and white dots are vertically aligned (at the 6 o-clock position), press the spacebar and the experiment will end.  ======================================================'
