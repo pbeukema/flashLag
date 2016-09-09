@@ -42,9 +42,9 @@ circleRadius = 125
 flashRadius = circleRadius+35 # displacement from target in pixels
 
 # Set up Window
-win = visual.Window([1000,1000], monitor = 'testMonitor', color = [-1,-1,-1], \
+win = visual.Window([500,500], monitor = 'testMonitor', color = [-1,-1,-1], \
        colorSpace = 'rgb', blendMode = 'avg', useFBO = True, allowGUI = \
-       False,fullscr=True,waitBlanking=False)
+       False,fullscr=False,waitBlanking=False)
 
 # Initalize Instructions Text
 instructions = '====================================================== \n In this task, you will see two dots appear on the screen. The first dot is white and will appear at the top center of your screen and move in a clockwise circle. The second dot is yellow and will flash in the bottom half of your screen. \n \n Your objective is to move the yellow flashing dot at the bottom of the screen to be vertically aligned with the white dot at the 6 o-clock position. Use the left and right arrow keys to move the yellow dot in your desired direction. Pressing the left arrow key will rotate the flash clockwise (leftwards), pressing the right arrow key will rotate the flash anti-clockwise (rightwards).  \n \n The dot only moves slightly after each press, so you may have to hit the arrow keys multiple times before you notice any large movement. When you believe that the yellow and white dots are vertically aligned (at the 6 o-clock position), press the spacebar and the experiment will end.  ======================================================'
@@ -111,7 +111,7 @@ expComplete = 0
 nTrials = 0 #to record how long it took subject to get to answer
 keyMapDict = {'left': 1, 'right':-1}
 increment = 32 #start at super easy detection threshold
-trials = range(0,10) # do 10 trials
+trials = range(0,12) # do 10 trials
 
 for trial in trials:
     if 'escape' in theseKeys:
@@ -128,9 +128,10 @@ for trial in trials:
     clockDot.draw()
     win.flip()
     core.wait(.8)
-
+    targetSide= random.choice([-1,1])
     for angle in np.arange(0,361,2):
-        targetSide= random.choice([-1,1]) #randomize which side the stimulus
+         #randomize which side the stimulus
+
         angleDev = random.choice([192]) #randomize where target is set
 
         angleRad = math.radians(angle)
@@ -171,11 +172,15 @@ for trial in trials:
     print 'targetSide', targetSide
     # Check if the response was correct
     if keyMapDict[key_response] == targetSide:
+        print 'right'
         increment = np.divide(increment,2)
         if increment == 1: #user at detection threshold for this framerate
             increment = 2 #reset to 2 because 1 degree will not show up
     elif keyMapDict[key_response] != targetSide:
-        increment = np.multiply(increment,2)
+        print 'wrong'
+        if increment < 32:
+            increment = np.multiply(increment,2)
+
     print 'increment', increment
     nTrials += 1
     print 'nTrial', nTrials
