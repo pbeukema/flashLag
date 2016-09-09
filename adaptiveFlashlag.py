@@ -131,7 +131,7 @@ for trial in trials:
 
     for angle in np.arange(0,361,2):
         targetSide= random.choice([-1,1]) #randomize which side the stimulus
-        angleDev = random.choice([160,224]) #randomize where target is set
+        angleDev = random.choice([192]) #randomize where target is set
 
         angleRad = math.radians(angle)
         x = circleRadius*math.sin(angleRad)
