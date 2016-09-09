@@ -44,7 +44,7 @@ flashRadius = circleRadius+35 # displacement from target in pixels
 # Set up Window
 win = visual.Window([1000,1000], monitor = 'testMonitor', color = [-1,-1,-1], \
        colorSpace = 'rgb', blendMode = 'avg', useFBO = True, allowGUI = \
-       False,fullscr=True)
+       False,fullscr=False,waitBlanking=False)
 
 # Initalize Instructions Text
 instructions = '====================================================== \n In this task, you will see two dots appear on the screen. The first dot is white and will appear at the top center of your screen and move in a clockwise circle. The second dot is yellow and will flash in the bottom half of your screen. \n \n Your objective is to move the yellow flashing dot at the bottom of the screen to be vertically aligned with the white dot at the 6 o-clock position. Use the left and right arrow keys to move the yellow dot in your desired direction. Pressing the left arrow key will rotate the flash clockwise (leftwards), pressing the right arrow key will rotate the flash anti-clockwise (rightwards).  \n \n The dot only moves slightly after each press, so you may have to hit the arrow keys multiple times before you notice any large movement. When you believe that the yellow and white dots are vertically aligned (at the 6 o-clock position), press the spacebar and the experiment will end.  ======================================================'
@@ -105,12 +105,15 @@ win.flip()
 core.wait(2)
 
 #-------Start Routine "Main Experiment"-------
-rot = -16
-angleDev = 180
+
+
 expComplete = 0
 nTrials = 0 #to record how long it took subject to get to answer
+keyMapDict = {'left': 1, 'right':-1}
+increment = 32 #start at super easy detection threshold
+trials = range(0,10) # do 10 trials
 
-while not expComplete:
+for trial in trials:
     if 'escape' in theseKeys:
         core.quit()
     frameN = 0
@@ -126,7 +129,10 @@ while not expComplete:
     win.flip()
     core.wait(.8)
 
-    for angle in np.arange(0,361,4):
+    for angle in np.arange(0,361,2):
+        targetSide= random.choice([-1,1]) #randomize which side the stimulus
+        angleDev = random.choice([160,224]) #randomize where target is set
+
         angleRad = math.radians(angle)
         x = circleRadius*math.sin(angleRad)
         y = circleRadius*math.cos(angleRad)
@@ -134,7 +140,8 @@ while not expComplete:
         clockDot.draw()
         if angle == angleDev:
             angleMark = angle
-            angleRad = math.radians(angleMark+rot)
+            angleRad = math.radians(angleMark+targetSide*increment)
+
             x2 = flashRadius*math.sin(angleRad)
             y2 = flashRadius*math.cos(angleRad)
             flash = True
@@ -159,17 +166,20 @@ while not expComplete:
         core.quit()
 
     key_response = theseKeys[0]
-    print key_response
+    print 'angleRad', angleRad
+    print 'key_resonse', key_response
+    print 'targetSide', targetSide
     # Check if the response was correct
-    if key_response == 'left':
-        rot += 2
-    elif key_response == 'right':
-        rot += -2
-    elif key_response == 'space':
-        expComplete = True
+    if keyMapDict[key_response] == targetSide:
+        increment = np.divide(increment,2)
+        if increment == 1: #user at detection threshold for this framerate
+            increment = 2 #reset to 2 because 1 degree will not show up
+    elif keyMapDict[key_response] != targetSide:
+        increment = np.multiply(increment,2)
+    print 'increment', increment
     nTrials += 1
-    print nTrials
-dataOut.loc[0] = [rot, nTrials]
+    print 'nTrial', nTrials
+dataOut.loc[0] = [increment, nTrials]
 dataOut.to_csv(outputfn, index = False)
 
 
