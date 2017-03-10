@@ -307,7 +307,7 @@ precision_trunc = "%.3f" % precision
 annotation = "P.S.E. = %s%s\nSlope = %s" % (PSE_trunc,deg_sign, precision_trunc)
 plt.annotate(annotation, xy = (PSE,.5),xytext = (-5, 5), textcoords = 'offset \
              points', ha = 'right', va = 'bottom')
-plotfn =  _thisDir + os.sep +'data/%saccuracy_%s_.png' %(expInfo['User'], \
+plotfn =  _thisDir + os.sep +'data/%saccuracy_%s_.svg' %(expInfo['User'], \
           expName)
 plt.savefig(plotfn)
 
