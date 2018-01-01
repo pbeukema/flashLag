@@ -1,5 +1,5 @@
 # flashlag
-This is experimental code for testing dynamic speed vision or how well you can discriminate the location of a moving object relative to a fixed object. The inspiration for this test is a visual illusion called the flashlag effect which you can read about [here](https://en.wikipedia.org/wiki/Flash_lag_illusion). For reference, the best professional athletes I have tested score around 4 degrees, average performance among non-professionals I have tested is about 4 times worse.  
+This is experimental code for testing dynamic speed vision or how well you can discriminate the location of a moving object relative to a fixed object. The inspiration for this test is a visual illusion called the flashlag effect which you can read about [here](https://en.wikipedia.org/wiki/Flash_lag_illusion). For reference, professional baseball players, who have incredible visual acuity, score around 4 degrees, average performance among non-professional atheletes I have tested is about 4 times worse.  
 
 Below are instructions for getting flash lag to run. 
 
@@ -29,5 +29,5 @@ source activate pyflash
 
 * Open a terminal, navigate to the directory containing flashlag.py, write python flashlag.py & press [enter]
 
-* Output data will be saved in data/
+* You will see a graph of your performance as a function of the visual angle (which will be fit by logistic regression).  
 
