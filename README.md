@@ -3,8 +3,10 @@ This is experimental code for testing dynamic speed vision or how well you can d
 
 Below are instructions for getting flash lag to run. 
 
-* Install anaconda (http://continuum.io/downloads), [bash Anaconda$version#.sh]
-
+* Install [anaconda](http://continuum.io/downloads)
+```bash
+bash Anaconda$version#.sh
+```
 * Install dependencies if not already:
   * Install pip (conda install pip)
   * Install psychopy (pip install psychopy) 
