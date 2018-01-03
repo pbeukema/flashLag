@@ -14,17 +14,18 @@ import matplotlib.pyplot as plt
 from psychopy import visual, core, event, gui, data
 from sklearn import linear_model
 
+
+nSessions = 5
 # Grab user info and set up output files for analysis
 _thisDir = os.path.dirname(os.path.abspath(__file__))
+print _thisDir
 os.chdir(_thisDir)
-expName = 'FlashLagPilot'
+expName = 'standardFlashlag'
 expInfo = {u'User': u''}
 dlg = gui.DlgFromDict(dictionary=expInfo, title=expName)
 if dlg.OK == False: core.quit()
 expInfo['date'] = data.getDateStr()
 expInfo['expName'] = expName
-outputfn =  _thisDir + os.sep +'data/%s_%s_%s.csv' %(expInfo['User'], \
-            expName, expInfo['date'])
 dataOut = pd.DataFrame(columns = ('response','correct','rotation'))
 grabMeans = pd.DataFrame()
 deg_sign= u'\N{DEGREE SIGN}'
@@ -47,13 +48,16 @@ win = visual.Window([1000,1000], monitor = 'testMonitor', color = [-1,-1,-1], \
        False,fullscr=True)
 
 # Initalize Instructions Text
-instructions = '====================================================== \n This is a test of how well you can see movement and track relative motion. For each trial you will see a blinking white light moving along a circular path. As the white light moves around in a circle, there will also be a single yellow flash. The yellow flash will appear at different points around the path of the white light. \n \n Your task is to determine if the yellow flash appears ahead of the blinking white light, or behind it. \n \n Some trials will be easier than others. Don\'t worry if you find some of these trials very difficult, just do your best. Try to track the white blinking light as it moves around, and look for the yellow flash. If the yellow flash appears ahead of the blinking white light, press the \'up\' arrow. If the yellow flash appears behind the blinking white light, press the \'down\' arrow.\n \n  If you are unsure about your response, make your best guess. The entire test takes 3 minutes. \n \n The first trials will be a practice session to acquaint you with the requirements, followed by a window signalling the actual test.  Get ready, and press any key to begin. ====================================================== '
+instructions = '====================================================== \n This is a test of how well you can see movement and track relative motion. For each trial you will see a blinking white light moving along a circular path. As the white light moves around in a circle, there will also be a single yellow flash. The yellow flash will appear at different points around the path of the white light. \n \n Your task is to determine if the yellow flash appears ahead of the blinking white light, or behind it. \n \n Some trials will be easier than others. Don\'t worry if you find some of these trials very difficult, just do your best. Try to track the white blinking light as it moves around, and look for the yellow flash. If the yellow flash appears ahead of the blinking white light, press the right arrow. If the yellow flash appears behind the blinking white light, press the left arrow. \n \n  If you are unsure about your response, make your best guess. The entire test takes 25 minutes. \n \n The first trials will be a practice session to acquaint you with the requirements, followed by a window signalling the actual test.  Get ready, and press any key to begin. ====================================================== '
 
 instructions_Practice = 'End of practice session. Press any key to continue.'
+sessionText = 'Session Completed. Press any key to continue to next session.'
+
 completedText = 'End of Testing. Thank you.'
 instrText = visual.TextStim(win = win, ori = 0, name = 'instrText', text=instructions, font = u'Arial',  pos = [0, 0], height = 0.05, wrapWidth = None, color = u'white', colorSpace = 'rgb', opacity = 1, depth = 0.0)
 
 instrPracticeText = visual.TextStim(win = win, ori = 0, name = 'instrText', text=instructions_Practice, font = u'Arial',  pos = [0, 0], height = 0.05, wrapWidth = None, color = u'white', colorSpace = 'rgb', opacity = 1, depth = 0.0)
+sessionCompletedText = visual.TextStim(win = win, ori = 0, name = 'sessionText', text=sessionText, font = u'Arial',  pos = [0, 0], height = 0.05, wrapWidth = None, color = u'white', colorSpace = 'rgb', opacity = 1, depth = 0.0)
 
 expCompletedText = visual.TextStim(win = win, ori = 0, name = 'instrText', text=completedText, font = u'Arial',  pos = [0, 0], height = 0.05, wrapWidth = None, color = u'white', colorSpace = 'rgb', opacity = 1, depth = 0.0)
 
@@ -69,7 +73,7 @@ flashDot = visual.GratingStim(win = win, mask = 'gauss', units='pix', \
 
 
 trialType = np.repeat([-32,-16,-8,0,8,16,32],20) # 20 trials for each of 5
-myDict = {'-32': 'down', '-16': 'down', '-8': 'down', '0': 'down', '8': 'up', '16': 'up', '32': 'up'}
+myDict = {'-32': 'left', '-16': 'left', '-8': 'left', '0': 'left', '8': 'right', '16': 'right', '32': 'right'}
 randTrials = np.random.permutation(trialType)
 response = [myDict[str(i)] for i in randTrials]
 anglePres = np.arange(88,264,8) # yellow flash
@@ -133,7 +137,7 @@ for rot, angleDev, prac_response in zip(practiceTrials, values, response):
     win.flip()
     core.wait(.8)
 
-    for angle in np.arange(0,361,8):
+    for angle in np.arange(0,361,4  ):
         angleRad = math.radians(angle)
         x = circleRadius*math.sin(angleRad)
         y = circleRadius*math.cos(angleRad)
@@ -159,7 +163,7 @@ for rot, angleDev, prac_response in zip(practiceTrials, values, response):
     clockDot.setAutoDraw(False)
     win.update()
     win.flip()
-    theseKeys = event.waitKeys(float('inf'), keyList=('up', 'down', 'escape'), timeStamped = False)
+    theseKeys = event.waitKeys(float('inf'), keyList=('right', 'left', 'escape'), timeStamped = False)
 
     # Check if user wants to quit
     if 'escape' in theseKeys:
@@ -201,63 +205,107 @@ for thisComponent in InstructionsComponents2:
 #-------End Routine "Practice"-------
 win.flip()
 core.wait(2)
+for session in range(1,nSessions+1):
+    print nSessions
+    outputfn =  _thisDir + os.sep +'data/%s_%s_%s_session_%d.csv' %(expInfo['User'], \
+                expName, expInfo['date'], session)
+    #-------Start Routine "Main Experiment"-------
+    trialType = np.repeat([-32,-16,-8,0,8,16,32],20) # 20 trials for each of 7
+    myDict = {'-32': 'left', '-16': 'left', '-8': 'left', '0': 'left', '8': 'right', '16': 'right', '32': 'right'}
+    randTrials = np.random.permutation(trialType)
+    response = [myDict[str(i)] for i in randTrials]
+    anglePres = np.arange(88,264,8) # yellow flash
+    values = [random.choice(anglePres) for _ in xrange(100)]
+    for rot, angleDev, response in zip(randTrials, values, response):
+        if 'escape' in theseKeys:
+            core.quit()
+        frameN = 0
+        flash = False
 
-#-------Start Routine "Main Experiment"-------
-for rot, angleDev, response in zip(randTrials, values, response):
-    if 'escape' in theseKeys:
-        core.quit()
-    frameN = 0
-    flash = False
-
-    # project sphere for 800 ms so that user directs focus to sphere
-    angleRad = math.radians(0)
-    x = circleRadius*math.sin(angleRad)
-    y = circleRadius*math.cos(angleRad)
-    clockDot.setPos([x,y])
-    clockDot.setAutoDraw(True)
-    clockDot.draw()
-    win.flip()
-    core.wait(.8)
-
-    for angle in np.arange(0,361,8):
-        angleRad = math.radians(angle)
+        # project sphere for 800 ms so that user directs focus to sphere
+        angleRad = math.radians(0)
         x = circleRadius*math.sin(angleRad)
         y = circleRadius*math.cos(angleRad)
         clockDot.setPos([x,y])
+        clockDot.setAutoDraw(True)
         clockDot.draw()
-        if angle == angleDev:
-            angleMark = angle
-            angleRad = math.radians(angleMark+rot)
-            x2 = flashRadius*math.sin(angleRad)
-            y2 = flashRadius*math.cos(angleRad)
-            flash = True
-        # set position of flash
-        if frameN <= 1 and flash: # show flash for 1 frames
-            flashDot.setPos([x2,y2])
-            flashDot.draw()
-            frameN = frameN+1
         win.flip()
-        if event.getKeys(keyList ='escape'):
+        core.wait(.8)
+
+        for angle in np.arange(0,361,4):
+            angleRad = math.radians(angle)
+            x = circleRadius*math.sin(angleRad)
+            y = circleRadius*math.cos(angleRad)
+            clockDot.setPos([x,y])
+            clockDot.draw()
+            if angle == angleDev:
+                angleMark = angle
+                angleRad = math.radians(angleMark+rot)
+                x2 = flashRadius*math.sin(angleRad)
+                y2 = flashRadius*math.cos(angleRad)
+                flash = True
+            # set position of flash
+            if frameN <= 1 and flash: # show flash for 1 frames
+                flashDot.setPos([x2,y2])
+                flashDot.draw()
+                frameN = frameN+1
+            win.flip()
+            if event.getKeys(keyList ='escape'):
+                core.quit()
+            event.clearEvents('mouse')
+
+        # Turn off stimulus and wait for response
+        clockDot.setAutoDraw(False)
+        win.update()
+        win.flip()
+        theseKeys = event.waitKeys(float('inf'), keyList=('right', 'left', 'escape'), timeStamped = False)
+
+        # Check if user wants to quit
+        if 'escape' in theseKeys:
             core.quit()
-        event.clearEvents('mouse')
 
-    # Turn off stimulus and wait for response
-    clockDot.setAutoDraw(False)
-    win.update()
+        key_response = theseKeys[0]
+        # Check if the response was correct
+        correct = key_response == response
+        dataOut.loc[len(dataOut)+1] = [key_response, correct, rot]
+        dataOut.to_csv(outputfn, index = False)
+
+        core.wait(.5)
+        #-------Set Up Routine "Instructions"-------
+    notStarted = 0
+    started = 1
+    session_response = event.BuilderKeyResponse()
+    session_response.status = notStarted
+    sessionComponents = []
+    sessionComponents.append(sessionCompletedText)
+    sessionComponents.append(session_response)
+    for thisComponent in sessionComponents:
+        if hasattr(thisComponent, 'status'):
+            thisComponent.status = notStarted
+
+    continueRoutine = True
+    endExpNow = False
+    while continueRoutine:
+        sessionCompletedText.setAutoDraw(True)
+        theseKeys = event.getKeys()
+        if 'escape' in theseKeys:
+            endExpNow = True
+        if len(theseKeys) > 0:
+            continueRoutine = False
+        if endExpNow or event.getKeys(keyList=['escape']):
+            core.quit()
+        if continueRoutine:
+            win.flip()
+
+    for thisComponent in sessionComponents:
+        if hasattr(thisComponent, 'setAutoDraw'):
+            thisComponent.setAutoDraw(False)
+
+    #-------End Routine "Instructions"-------
     win.flip()
-    theseKeys = event.waitKeys(float('inf'), keyList=('up', 'down', 'escape'), timeStamped = False)
-
-    # Check if user wants to quit
-    if 'escape' in theseKeys:
-        core.quit()
-
-    key_response = theseKeys[0]
-    # Check if the response was correct
-    correct = key_response == response
-    dataOut.loc[len(dataOut)+1] = [key_response, correct, rot]
-    dataOut.to_csv(outputfn, index = False)
-
     core.wait(.5)
+    fixSpot.setAutoDraw(False)
+
 #-------End Routine "Main Experiment"-------
 expCompletedText.setAutoDraw(True)
 win.flip()
@@ -273,8 +321,8 @@ for rot in np.unique(dataOut[['rotation']]):
     grabMeans.loc[i] = [rot, mean_acc.correct]
     i=i+1
 
-dataOut.loc[dataOut.response == 'down', ['response']] = 0
-dataOut.loc[dataOut.response == 'up', ['response']] = 1
+dataOut.loc[dataOut.response == 'left', ['response']] = 0
+dataOut.loc[dataOut.response == 'right', ['response']] = 1
 dataOut[['response']] = dataOut[['response']].astype(float)
 X = np.array(dataOut['rotation'])
 X = X[:,np.newaxis]
