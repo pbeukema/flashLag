@@ -18,6 +18,8 @@ from sklearn import linear_model
 _thisDir = os.path.dirname(os.path.abspath(__file__))
 os.chdir(_thisDir)
 expName = 'adaptiveFlashlag'
+if not os.path.exists(_thisDir + '/data'):
+    os.makedirs(_thisDir + '/data')
 expInfo = {u'User': u''}
 dlg = gui.DlgFromDict(dictionary=expInfo, title=expName)
 if dlg.OK == False: core.quit()
