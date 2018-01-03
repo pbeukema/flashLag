@@ -1,35 +1,33 @@
 # flashlag
-Adaptative flash lag experimental design for python
+This is experimental code for testing dynamic speed vision or how well you can discriminate the location of a moving object relative to a fixed object. The inspiration for this test is a visual illusion called the flashlag effect which you can read about [here](https://en.wikipedia.org/wiki/Flash_lag_illusion). For reference, professional baseball players, who have incredible visual acuity, score around 4 degrees, average performance among non-professional atheletes I have tested is about 4 times worse.  
 
-Below are instructions for getting flash lag on your computer. These instructions will work for linux and mac, but will need some modifications for use in windows. Note that if you have already installed the stand alone version of psychopy, when you try running this program from a terminal, it may not recognize that version. Use pip install psychopy (2b), and the libraries will import correctly. 
+Below are instructions for getting flash lag to run. 
 
+* Download/Install [anaconda](http://continuum.io/downloads)
+```bash
+bash Anaconda$version#.sh
+```
+* Install dependencies:
+  * Install pip (conda install pip)
+  * Install psychopy (pip install psychopy) 
+  * Install pyglet (pip install pyglet)
+  * Install wxpython (conda install wxpython)
+  * Install seaborn (pip install seaborn) 
+  
 Note that Python 3 is currently incompatible with psychopy. Therefore if you are running python 3, the solution is to create a virtual environment with python 2. Conda makes that extremely simple. First install anaconda following step 1 below then come back here. 
 
-conda create -n pyflash python=2.7 anaconda 
+```bash
+conda create -n $newenvname python=2.XX anaconda 
+```
+This will download python 2.XX if you haven't already done so. Next activate your newly created environment with
 
-This will download python 2.7 if you haven't already done so. Next activate your newly created environment with
-
+```bash
 source activate pyflash
-
-
-
-1. Install anaconda (http://continuum.io/downloads), [bash Anaconda$version#.sh]
-
-2. Install dependencies if not already:
+```
   
-  a. Install pip (conda install pip)
+* If you did not clone the repo, then you will need to make a data directory for the output in the same location as flashlag.py (mkdir data).
 
-  b. Install psychopy (pip install psychopy) 
+* Open a terminal, navigate to the directory containing flashlag.py, write python flashlag.py & press [enter]
 
-  c. Install pyglet (pip install pyglet)
-
-  d. Install wxpython (conda install wxpython)
-
-  e. Install seaborn (pip install seaborn) 
-  
-3. If you did not clone the repo, then you will need to make a data directory for the output in the same location as flashlag.py (mkdir data).
-
-4. Open a terminal, navigate to the directory containing flashlag.py, write python flashlag.py & press [enter]
-
-5. Output data will be saved in data/
+* You will see a graph of your performance as a function of the visual angle (which will be fit by logistic regression).  
 
