@@ -1,5 +1,5 @@
 # flashlag
-This is experimental code for testing dynamic speed vision or how well you can discriminate the location of a moving object relative to a fixed object. The inspiration for this test is a visual illusion called the flashlag effect which you can read about [here](https://en.wikipedia.org/wiki/Flash_lag_illusion). For reference, professional baseball players, who have incredible visual acuity, score around 4 degrees, average performance among non-professional atheletes I have tested is about 4 times worse.  
+This is experimental code for testing dynamic speed vision or how well you can discriminate the location of a moving object relative to a fixed object. The inspiration for this test is a visual illusion called the flashlag effect which you can read about [here](https://en.wikipedia.org/wiki/Flash_lag_illusion). For reference, professional baseball players, who have incredible visual acuity, score around 4 degrees, average performance among non-professional athletes I have tested is ~16 degrees, or about 4 times as worse.  
 
 Below are instructions for getting flash lag to run. 
 
